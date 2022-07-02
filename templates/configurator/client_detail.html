@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ client.first_name }} {{ client.last_name }}</h1>
+  <p>
+    <strong>username: </strong>{{ client.username }} /
+    <span><strong>first name: </strong>{{ client.first_name }}</span> /
+    <span><strong>last name: </strong>{{ client.last_name }}</span> /
+    <span><strong>total orders: </strong>{{ total_orders_count }}</span> /
+    <span><strong>manager orders: </strong>{{ orders.count }}</span>
+  </p>
+  {% include "includes/orders.html" %}
+{% endblock %}

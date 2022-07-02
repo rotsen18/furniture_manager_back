@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>New order</h1>
+  <div class="container">
+    <div class="row">
+      <div class="col-md">
+        One of three columns
+      </div>
+      <div class="col-md">
+        <form>
+          <fieldset>
+            <div class="form-group">
+              <label for="exampleSelect1" class="form-label mt-4">Client</label>
+              <select class="form-select" id="exampleSelect1">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exampleSelect2" class="form-label mt-4">Manufacturer</label>
+              <select class="form-select" id="exampleSelect2">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </fieldset>
+        </form>
+      </div>
+
+      <div class="col-md">
+        One of three columns
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{%  block content %}
+  <h1>Order detail</h1>
+  <p>{{ order }}</p>
+  <a href="{% url 'configurator:change_q3' %}">change to Q3</a>
+  <br>
+  <a href="#">copy order</a>
+  <a href="{% url 'configurator:order_edit' pk=order.id %}">edit order</a>
+  <a href="#">delete order</a>
+<ul>
+      {% for set in order.sets.all %}
+        {{ set }}
+        <ul>
+          {% for product in set.products.all %}
+            <li>{{ product }}</li>
+          {% endfor %}
+        </ul>
+      {% endfor %}
+    </ul>
+{% endblock %}

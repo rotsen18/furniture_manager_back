@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Article</th>
+        <th scope="col">Manufacturer</th>
+        <th scope="col">Serie</th>
+        <th scope="col">Component</th>
+        <th scope="col">Description</th>
+        <th scope="col">Color</th>
+        <th scope="col">Ean</th>
+        <th scope="col">Price</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for product in products %}
+        <tr class="table-secondary">
+          <th scope="row">{{ product.id }}</th>
+          <td>{{ product.article }}</td>
+          <td>{{ product.manufacturer }}</td>
+          <td>
+            {% for serie in product.series.all %}
+              {{ serie }}
+            {% endfor %}
+          </td>
+          <td>{{ product.component }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ product.color }}</td>
+          <td>{{ product.ean }}</td>
+          <td>{{ product.price }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

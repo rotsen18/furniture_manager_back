@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="row">
+      <div class="col-md">
+        <strong>Manufacturer: </strong>{{ order.manufacturer }}
+      </div>
+      <div class="col-md">
+        <strong>Serie: </strong>{{ order.serie }}
+      </div>
+      <div class="col-md">
+        <strong>Mech color:</strong>{{ order.mech_color }} <button type="button" style="background: {{ order.mech_color.hex_code }}" class="btn btn-primary disabled"></button>
+      </div>
+      <div class="col-md">
+        <strong>Cover color:</strong>{{ order.cover_color }} <button type="button" style="background: {{ order.cover_color.hex_code }}" class="btn btn-primary disabled"></button>
+      </div>
+      <div class="col-md">
+        <strong>Frame color:</strong>{{  order.frame_color }} <button type="button" style="background: {{ order.frame_color.hex_code }}" class="btn btn-primary disabled"></button>
+      </div>
+    </div>
+    <br>
+    <p>Horizontal frames</p>
+    <hr>
+    <div class="row">
+      <div class="col-md">
+        ramka 1x
+
+      </div>
+      <div class="col-md">
+        ramka 2x
+      </div>
+      <div class="col-md">
+        ramka 3x
+      </div>
+      <div class="col-md">
+        ramka 4x
+      </div>
+      <div class="col-md">
+        ramka 5x
+      </div>
+      <div class="col-md">
+        ramka 6x
+      </div>
+    </div>
+    <br>
+    <p>Vertical frames</p>
+    <hr>
+    <div class="row">
+      <div class="col-md">
+        ramka v 1x
+      </div>
+      <div class="col-md">
+        ramka v 2x
+      </div>
+      <div class="col-md">
+        ramka v 3x
+      </div>
+      <div class="col-md">
+        ramka v 4x
+      </div>
+      <div class="col-md">
+        ramka v 5x
+      </div>
+      <div class="col-md">
+        ramka v 6x
+      </div>
+    </div>
+
+
+
+
+{% endblock %}

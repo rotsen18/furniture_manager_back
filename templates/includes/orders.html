@@ -1,0 +1,37 @@
+<table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Client</th>
+      <th scope="col">Manufacturer</th>
+      <th scope="col">Serie</th>
+      <th scope="col">Created</th>
+      <th scope="col">Changed</th>
+      <th scope="col">Status</th>
+    </tr>
+    </thead>
+  <tbody>
+    {% for order in orders %}
+      <tr class="table-secondary">
+        <th scope="row">{{ order.id }}</th>
+        <td>{{ order.client }}</td>
+        <td>{{ order.manufacturer }}</td>
+        <td>{{ order.serie }}</td>
+        <td>{{ order.created }}</td>
+        <td>{{ order.changed }}</td>
+        <td>{{ order.status }}</td>
+        <td>
+          <a href="{% url 'configurator:order_detail' pk=order.id %}">
+            <button type="button" class="btn btn-success">detail</button>
+          </a>
+          <a href="{% url 'configurator:order_edit' pk=order.id %}">
+            <button type="button" class="btn btn-warning">edit</button>
+          </a>
+          <a href="#">
+            <button type="button" class="btn btn-danger">delete</button>
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>

@@ -1,4 +1,14 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from furniture_manager import settings
+
+
+def get_sentinel_user():
+    return settings.AUTH_USER_MODEL.objects.get_or_create(username='deleted')[0]
+
+
+class Manager(AbstractUser):
+    pass
 
 
 class Manufacturer(models.Model):
@@ -49,7 +59,7 @@ class Type(models.Model):  # swithcer, socket, frame
 
 
 class Color(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=100)
     hex_code = models.CharField(max_length=7)
 
     def __str__(self):
@@ -64,13 +74,31 @@ class Currency(models.Model):
         return self.code
 
 
+class Client(models.Model):
+    first_name = models.CharField(max_length=63)
+    last_name = models.CharField(max_length=63)
+    username = models.CharField(max_length=63, null=True)
+
+    def __str__(self):
+        return self.username
+
+
 class Order(models.Model):  # order consists of several products
-    owner = models.CharField(max_length=255, null=True)
+    STATUTES = [
+        ("New", "New"),
+        ("Send", "Send"),
+        ("Completed", "Completed"),
+        ("Canceled", "Canceled")
+    ]
+
+    client = models.ForeignKey("Client", null=True, related_name="orders", on_delete=models.SET(get_sentinel_user))
+    manager = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, related_name="orders", on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     changed = models.DateTimeField(auto_now=True)
-    description = models.CharField(max_length=255, null=True)
-    manufacturer = models.ForeignKey("Manufacturer", on_delete=models.CASCADE)
-    serie = models.ForeignKey("Series", on_delete=models.CASCADE)
+    status = models.CharField(max_length=100, default="New", choices=STATUTES)
+    description = models.CharField(max_length=255, null=True, blank=True)
+    manufacturer = models.ForeignKey("Manufacturer", null=True, on_delete=models.CASCADE)
+    serie = models.ForeignKey("Series", null=True, on_delete=models.CASCADE)
     mech_color = models.ForeignKey("Color", default=2,
                                    related_name="mech_colors",
                                    on_delete=models.SET_DEFAULT)
@@ -86,7 +114,7 @@ class Order(models.Model):  # order consists of several products
     )
 
     def __str__(self):
-        return f"{self.owner} {self.description} {self.created}"
+        return f"{self.id} {self.client} {self.description}"
 
 
 class Product(models.Model):
@@ -115,14 +143,14 @@ class Product(models.Model):
 
 
 class Set(models.Model):  # ProductSet consists of several products
-    name = models.CharField(max_length=100)
+    size = models.IntegerField(default=1)
     products = models.ManyToManyField(
         "Product",
         through="ProductSet"
     )
 
     def __str__(self):
-        return self.name
+        return f"Kit {self.id}"
 
 
 class ProductSet(models.Model):

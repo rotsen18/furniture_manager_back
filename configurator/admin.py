@@ -1,10 +1,13 @@
 from django.contrib import admin
 
-from configurator.models import Set, ProductSet, OrderSet, Product
-from configurator.models import Series, Order, Manufacturer
+from configurator.models import Set, ProductSet, OrderSet, Product, Manager
+
+from configurator.models import Series, Order, Manufacturer, Client
 from configurator.models import Type, Component, Currency, Color
 
 
+admin.site.register(Client)
+admin.site.register(Manager)
 admin.site.register(Set)
 admin.site.register(Series)
 admin.site.register(ProductSet)
