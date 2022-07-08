@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+  <div class="row">
+
+      <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+        <p class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+          <svg class="bi me-2" width="40" height="32"></svg>
+          <span class="fs-4">Options</span>
+        </p>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="{% url 'configurator:order_create' %}" class="nav-link text-white" aria-current="page">
+              <svg class="bi me-2" width="16" height="16"></svg>
+              New order
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16"></svg>
+              Filter orders?
+            </a>
+          </li>
+        </ul>
+
+    </div>
+    <div class="col">
+    <h1>Order list</h1>
+      {% include "includes/orders.html" %}
+    </div>
+  </div>
+
+
+{% endblock %}

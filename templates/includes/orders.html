@@ -2,6 +2,7 @@
     <thead>
     <tr>
       <th scope="col">Id</th>
+      <th scope="col">Manager</th>
       <th scope="col">Client</th>
       <th scope="col">Manufacturer</th>
       <th scope="col">Serie</th>
@@ -11,9 +12,10 @@
     </tr>
     </thead>
   <tbody>
-    {% for order in orders %}
+    {% for order in order_list %}
       <tr class="table-secondary">
         <th scope="row">{{ order.id }}</th>
+        <td>{{ order.manager }}</td>
         <td>{{ order.client }}</td>
         <td>{{ order.manufacturer }}</td>
         <td>{{ order.serie }}</td>
@@ -27,7 +29,7 @@
           <a href="{% url 'configurator:order_edit' pk=order.id %}">
             <button type="button" class="btn btn-warning">edit</button>
           </a>
-          <a href="#">
+          <a href="{% url 'configurator:order_delete' pk=order.id %}">
             <button type="button" class="btn btn-danger">delete</button>
           </a>
         </td>

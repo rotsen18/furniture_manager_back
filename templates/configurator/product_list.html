@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="container">
     <table class="table table-hover">
       <thead>
       <tr>
@@ -17,7 +16,7 @@
       </tr>
       </thead>
       <tbody>
-      {% for product in products %}
+      {% for product in product_list %}
         <tr class="table-secondary">
           <th scope="row">{{ product.id }}</th>
           <td>{{ product.article }}</td>
@@ -36,5 +35,4 @@
       {% endfor %}
       </tbody>
     </table>
-  </div>
 {% endblock %}

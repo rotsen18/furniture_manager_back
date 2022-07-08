@@ -1,21 +1,41 @@
 from django.urls import path
 from django.contrib.auth import views
 
-from configurator.views import index, change_q3, orders_list, order_detail, \
-    manager_detail, new_order, clients_list, client_detail, products_list, \
-    order_edit
+from configurator.views import (
+    index,
+    change_q3,
+    OrderListView,
+    OrderDetailView,
+    ClientListView,
+    ClientDetailView,
+    ProductListView,
+    ManagerDetailView,
+    OrderDeleteView,
+    OrderCreateView,
+    ClientCreateView, ManufacturerCreateView, SeriesCreateView,
+    ColorCreateView,
+    OrderUpdateView
+)
+
 
 urlpatterns = [
     path("", index, name="index"),
     path("change_q3/", change_q3, name="change_q3"),
-    path("orders/", orders_list, name="orders_list"),
-    path("orders/<int:pk>/", order_detail, name="order_detail"),
-    path("orders/edit/<int:pk>/", order_edit, name="order_edit"),
-    path("new_order/", new_order, name="new_order"),
-    path("manager/", manager_detail, name="manager_detail"),
-    path("clients/", clients_list, name="clients_list"),
-    path("clients/<int:pk>/", client_detail, name="client_detail"),
-    path("products/", products_list, name="products_list"),
+    path("orders/", OrderListView.as_view(), name="orders_list"),
+    path("orders/<int:pk>/", OrderDetailView.as_view(), name="order_detail"),
+    path("orders/<int:pk>/edit/", OrderUpdateView.as_view(), name="order_edit"),
+    path("orders/<int:pk>/delete/", OrderDeleteView.as_view(), name="order_delete"),
+    path("orders/create", OrderCreateView.as_view(), name="order_create"),
+    path("managers/<int:pk>/", ManagerDetailView.as_view(), name="manager_detail"),
+    path("clients/", ClientListView.as_view(), name="client_list"),
+    path("clients/<int:pk>/", ClientDetailView.as_view(), name="client_detail"),
+    path("clients/create/", ClientCreateView.as_view(), name="client_create"),
+    path("products/", ProductListView.as_view(), name="product_list"),
+    path("manufacturers/create/", ManufacturerCreateView.as_view(), name="manufacturer_create"),
+    path("series/create/", SeriesCreateView.as_view(), name="series_create"),
+    path("color/create/", ColorCreateView.as_view(), name="color_create"),
+
+
     path("login/", views.LoginView.as_view),
     path("logout/", views.LogoutView.as_view),
 ]

@@ -1,9 +1,14 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'configurator:manager_detail' %}">{{ user.username }}</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="true" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <a href="{% url 'configurator:manager_detail' pk=user.id %}" class="navbar-brand d-flex align-items-center text-white text-decoration-none" id="dropdownUser1"
+       data-bs-toggle="dropdown" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person"
+           viewBox="0 0 16 16">
+        <path
+            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
+      </svg>
+      <strong>{{ user.username }}</strong>
+    </a>
     <div class="navbar-collapse collapse show" id="navbarColor01" style="">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
@@ -15,16 +20,17 @@
           <a class="nav-link" href="{% url "configurator:orders_list" %}">Orders</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url "configurator:new_order" %}">New order</a>
+          <a class="nav-link" href="{% url "configurator:order_create" %}">New order</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url "configurator:clients_list" %}">Clients</a>
+          <a class="nav-link" href="{% url "configurator:client_list" %}">Clients</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url "configurator:products_list" %}">Products</a>
+          <a class="nav-link" href="{% url "configurator:product_list" %}">Products</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+             aria-expanded="false">Dropdown</a>
           <div class="dropdown-menu">
             <a class="dropdown-item" href="#">Action</a>
             <a class="dropdown-item" href="#">Another action</a>

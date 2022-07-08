@@ -1,7 +1,11 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views import generic
 
-from configurator.models import Order, Product, Manager, Client
+from configurator.models import Order, Product, Manager, Client, Manufacturer, \
+    Series, Color
 
 
 @login_required
@@ -14,84 +18,91 @@ def index(request):
     return render(request, "configurator/index.html", context=context)
 
 
-@login_required
-def orders_list(request):
+class OrderListView(LoginRequiredMixin, generic.ListView):
+    model = Order
+    queryset = Order.objects.all()
 
-    context = {
-        "orders": Order.objects.filter(manager=request.user)
-    }
-    return render(request, "configurator/orders_list.html", context=context)
-
-
-@login_required
-def order_detail(request, pk):
-
-    context = {
-        "order": Order.objects.get(id=pk)
-    }
-    return render(request, "configurator/order_detail.html", context=context)
+    def get_queryset(self):
+        return self.queryset.filter(manager=self.request.user)
 
 
-@login_required
-def order_edit(request, pk):
-    order = Order.objects.get(id=pk)
-
-    context = {
-        "order": order
-    }
-    return render(request, "configurator/edit_order.html", context=context)
+class OrderDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Order
 
 
-@login_required
-def new_order(request):
-    context = {
-
-    }
-
-    return render(request, "configurator/new_order.html", context=context)
+class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Order
+    success_url = reverse_lazy("configurator:orders_list")
 
 
-@login_required
-def manager_detail(request):
-
-    context = {
-        "user": request.user
-    }
-    return render(request, "configurator/manager_detail.html", context=context)
-
-
-@login_required
-def clients_list(request):
-    context = {
-        "clients": Client.objects.filter(orders__manager=request.user).distinct(),
-
-    }
-
-    return render(request, "configurator/clients_list.html", context=context)
+class OrderUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Order
+    fields = [
+        "client",
+        "manager",
+        "description",
+        "manufacturer",
+        "serie",
+        "mech_color",
+        "cover_color",
+        "frame_color"
+    ]
+    success_url = reverse_lazy("configurator:orders_list")
 
 
-@login_required
-def client_detail(request, pk):
-    client = Client.objects.get(id=pk)
-    all_orders = Order.objects.filter(client_id=pk)
-    manager_orders = all_orders.filter(manager=request.user)
+class OrderCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Order
+    fields = [
+        "client",
+        "manager",
+        "description",
+        "manufacturer",
+        "serie",
+        "mech_color",
+        "cover_color",
+        "frame_color"
+    ]
 
-    context = {
-        "client": client,
-        "orders": manager_orders,
-        "total_orders_count": all_orders.count(),
-    }
 
-    return render(request, "configurator/client_detail.html", context=context)
+class ManagerDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Manager
 
 
-@login_required
-def products_list(request):
-    context = {
-        "products": Product.objects.all()
-    }
+class ClientListView(LoginRequiredMixin, generic.ListView):
+    model = Client
 
-    return render(request, "configurator/products_list.html", context=context)
+
+class ClientDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Client
+
+
+class ProductListView(LoginRequiredMixin, generic.ListView):
+    model = Product
+
+
+class ClientCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Client
+    fields = "__all__"
+
+
+class ClientDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Client
+    success_url = reverse_lazy("configurator:client_list")
+
+
+class ManufacturerCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Manufacturer
+    fields = "__all__"
+
+
+class SeriesCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Series
+    fields = "__all__"
+
+
+class ColorCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Color
+    fields = "__all__"
 
 
 @login_required
