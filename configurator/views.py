@@ -1,11 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 
 from configurator.models import Order, Product, Manager, Client, Manufacturer, \
-    Series, Color
+    Series, Color, Set, OrderSet
+from queries import get_products_list_in_order, get_list_with_kits
 
 
 @login_required
@@ -28,6 +30,19 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
 
 class OrderDetailView(LoginRequiredMixin, generic.DetailView):
     model = Order
+
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order_sets = get_list_with_kits(self.object)
+        products = get_products_list_in_order(self.object)
+
+        context["horizontal"] = order_sets["horizontal"]
+        context["vertical"] = order_sets["vertical"]
+        context["products"] = products
+
+        return context
 
 
 class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -103,6 +118,33 @@ class SeriesCreateView(LoginRequiredMixin, generic.CreateView):
 class ColorCreateView(LoginRequiredMixin, generic.CreateView):
     model = Color
     fields = "__all__"
+
+
+class SetUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Set
+    fields = "__all__"
+    # order_id = None
+
+    def get_success_url(self):
+        order_id = OrderSet.objects.filter(set=self.object).first().id
+        self.success_url = reverse_lazy("configurator:order_detail", args=[order_id])
+        return str(self.success_url)  # success_url may be lazy
+
+
+class SetDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Set
+
+    def get_success_url(self):
+        order_id = OrderSet.objects.filter(set=self.object).first().id
+        self.success_url = reverse_lazy("configurator:order_detail", args=[order_id])
+        return str(self.success_url)
+
+
+def copy_order(request, pk):
+    order = Order.objects.get(pk=pk)
+    order.id = None
+    order.save()
+    return HttpResponseRedirect(reverse("configurator:order_detail", args=[order.id]))
 
 
 @login_required

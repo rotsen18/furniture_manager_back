@@ -1,3 +1,7 @@
 body {
     background-color: #efefef;
 }
+
+.card-body {
+    padding: 0 0 0 15px;
+}
