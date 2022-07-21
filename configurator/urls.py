@@ -19,7 +19,8 @@ from configurator.views import (
     ColorCreateView,
     OrderUpdateView,
     SetUpdateView,
-    SetDeleteView, copy_order
+    SetDeleteView,
+    copy_order,
 )
 
 
@@ -37,7 +38,11 @@ urlpatterns = [
     path("clients/<int:pk>/", ClientDetailView.as_view(), name="client_detail"),
     path("clients/create/", ClientCreateView.as_view(), name="client_create"),
     path("products/", ProductListView.as_view(), name="product_list"),
-    path("manufacturers/create/", ManufacturerCreateView.as_view(), name="manufacturer_create"),
+    path(
+        "manufacturers/create/",
+        ManufacturerCreateView.as_view(),
+        name="manufacturer_create",
+    ),
     path("series/create/", SeriesCreateView.as_view(), name="series_create"),
     path("color/create/", ColorCreateView.as_view(), name="color_create"),
     path("sets/<int:pk>/edit/", SetUpdateView.as_view(), name="set_edit"),

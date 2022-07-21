@@ -5,8 +5,17 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
-from configurator.models import Order, Product, Manager, Client, Manufacturer, \
-    Series, Color, Set, OrderSet
+from configurator.models import (
+    Order,
+    Product,
+    Manager,
+    Client,
+    Manufacturer,
+    Series,
+    Color,
+    Set,
+    OrderSet,
+)
 from queries import get_products_list_in_order, get_list_with_kits
 
 
@@ -15,7 +24,9 @@ def index(request):
 
     context = {
         "orders_count": Order.objects.filter(manager=request.user).count(),
-        "clients_count": Client.objects.filter(orders__manager=request.user).distinct().count()
+        "clients_count": Client.objects.filter(orders__manager=request.user)
+        .distinct()
+        .count(),
     }
     return render(request, "configurator/index.html", context=context)
 
@@ -58,7 +69,7 @@ class OrderUpdateView(LoginRequiredMixin, generic.UpdateView):
         "serie",
         "mech_color",
         "cover_color",
-        "frame_color"
+        "frame_color",
     ]
     success_url = reverse_lazy("configurator:orders_list")
 
@@ -73,7 +84,7 @@ class OrderCreateView(LoginRequiredMixin, generic.CreateView):
         "serie",
         "mech_color",
         "cover_color",
-        "frame_color"
+        "frame_color",
     ]
 
 
@@ -164,8 +175,6 @@ def change_q3(request):
                 color=product.color,
             )
             new_products.append(queryset.first())
-    context = {
-        "products": new_products
-    }
+    context = {"products": new_products}
 
     return render(request, "configurator/changed_products.html", context=context)

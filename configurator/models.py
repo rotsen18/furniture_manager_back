@@ -4,7 +4,7 @@ from furniture_manager import settings
 
 
 def get_sentinel_user():
-    return settings.AUTH_USER_MODEL.objects.get_or_create(username='deleted')[0]
+    return settings.AUTH_USER_MODEL.objects.get_or_create(username="deleted")[0]
 
 
 class Manager(AbstractUser):
@@ -21,10 +21,7 @@ class Manufacturer(models.Model):
 
 class Series(models.Model):
     name = models.CharField(max_length=255)
-    manufacturer = models.ForeignKey(
-        "Manufacturer",
-        on_delete=models.CASCADE
-    )
+    manufacturer = models.ForeignKey("Manufacturer", on_delete=models.CASCADE)
     # TODO add photo field
 
     def __str__(self):
@@ -34,17 +31,19 @@ class Series(models.Model):
 class Component(models.Model):  # switcher with 1 button
     name = models.CharField(max_length=255)
     size = models.FloatField(default=1)
-    cover = models.ForeignKey("Component",
-                              null=True,
-                              blank=True,
-                              related_name="covers",
-                              on_delete=models.CASCADE)
+    cover = models.ForeignKey(
+        "Component",
+        null=True,
+        blank=True,
+        related_name="covers",
+        on_delete=models.CASCADE,
+    )
     additional_component = models.ForeignKey(
         "Component",
         null=True,
         blank=True,
         related_name="components",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
 
     def __str__(self):
@@ -91,30 +90,39 @@ class Order(models.Model):  # order consists of several products
         ("New", "New"),
         ("Send", "Send"),
         ("Completed", "Completed"),
-        ("Canceled", "Canceled")
+        ("Canceled", "Canceled"),
     ]
 
-    client = models.ForeignKey("Client", null=True, related_name="orders", on_delete=models.SET(get_sentinel_user))
-    manager = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, related_name="orders", on_delete=models.CASCADE)
+    client = models.ForeignKey(
+        "Client",
+        null=True,
+        related_name="orders",
+        on_delete=models.SET(get_sentinel_user),
+    )
+    manager = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        related_name="orders",
+        on_delete=models.CASCADE,
+    )
     created = models.DateTimeField(auto_now_add=True)
     changed = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=100, default="New", choices=STATUTES)
     description = models.CharField(max_length=255, null=True, blank=True)
-    manufacturer = models.ForeignKey("Manufacturer", null=True, on_delete=models.CASCADE)
-    serie = models.ForeignKey("Series", null=True, on_delete=models.CASCADE)
-    mech_color = models.ForeignKey("Color", default=2,
-                                   related_name="mech_colors",
-                                   on_delete=models.SET_DEFAULT)
-    cover_color = models.ForeignKey("Color", default=5,
-                                    related_name="cover_colors",
-                                    on_delete=models.SET_DEFAULT)
-    frame_color = models.ForeignKey("Color", default=5,
-                                    related_name="frame_colors",
-                                    on_delete=models.SET_DEFAULT)
-    sets = models.ManyToManyField(
-        "Set",
-        through="OrderSet"
+    manufacturer = models.ForeignKey(
+        "Manufacturer", null=True, on_delete=models.CASCADE
     )
+    serie = models.ForeignKey("Series", null=True, on_delete=models.CASCADE)
+    mech_color = models.ForeignKey(
+        "Color", default=2, related_name="mech_colors", on_delete=models.SET_DEFAULT
+    )
+    cover_color = models.ForeignKey(
+        "Color", default=5, related_name="cover_colors", on_delete=models.SET_DEFAULT
+    )
+    frame_color = models.ForeignKey(
+        "Color", default=5, related_name="frame_colors", on_delete=models.SET_DEFAULT
+    )
+    sets = models.ManyToManyField("Set", through="OrderSet")
 
     def __str__(self):
         return f"{self.id} {self.client} {self.description}"
@@ -132,10 +140,7 @@ class Product(models.Model):
     price = models.FloatField(null=True)
     price_currency = models.FloatField(null=True)
     type_currency = models.ForeignKey(
-        "Currency",
-        default=1,
-        null=True,
-        on_delete=models.SET_NULL
+        "Currency", default=1, null=True, on_delete=models.SET_NULL
     )
 
     def __str__(self):
@@ -147,10 +152,7 @@ class Product(models.Model):
 
 class Set(models.Model):  # ProductSet consists of several products
     size = models.IntegerField(default=1)
-    products = models.ManyToManyField(
-        "Product",
-        through="ProductSet"
-    )
+    products = models.ManyToManyField("Product", through="ProductSet")
 
     def __str__(self):
         return f"Kit {self.id}"
