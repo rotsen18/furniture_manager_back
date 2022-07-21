@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <br>
+  <div class="row">
+
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 230px;">
+      <p class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"></svg>
+        <span class="fs-4">Options</span>
+      </p>
+      <hr>
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+          <a href="{% url 'configurator:client_create' %}" class="nav-link text-white" aria-current="page">
+            <svg class="bi me-2" width="16" height="16"></svg>
+            Add client
+          </a>
+        </li>
+        {% if user.is_staff %}
+        <div>
+        <li>
+          <a href="{% url 'configurator:manufacturer_create' %}" class="nav-link text-white">
+            <svg class="bi me-2" width="16" height="16"></svg>
+            Add manufacturer
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'configurator:series_create' %}" class="nav-link text-white">
+            <svg class="bi me-2" width="16" height="16"></svg>
+            Add serie
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'configurator:color_create' %}" class="nav-link text-white">
+            <svg class="bi me-2" width="16" height="16"></svg>
+            Add color
+          </a>
+        </li>
+          </div>
+        {% endif %}
+      </ul>
+    </div>
+    <div class="col-lg-1"></div>
+    <div class="col-lg-4">
+      <h3>{{ object|yesno:"Update, Create new" }} order</h3>
+      <form action="" method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" class="btn btn-primary">
+      </form>
+    </div>
+    <div class="col-lg-4"></div>
+  </div>
+{% endblock %}

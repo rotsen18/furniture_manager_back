@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <br>
+  <div class="row">
+
+    <div style="width: 185px" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+        <p class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"></svg>
+        <span class="fs-4">Options</span>
+      </p>
+      <hr>
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+          <a href="{% url 'configurator:client_create' %}" class="nav-link text-white" aria-current="page">
+            <svg class="bi me-2" width="16" height="16"></svg>
+            Add client
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link text-white">
+            <svg class="bi me-2" width="16" height="16"></svg>
+            Filter clients?
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md">
+      <h1>{{ client.first_name }} {{ client.last_name }}</h1>
+      <p>
+        <strong>username: </strong>{{ client.username }} /
+        <span><strong>first name: </strong>{{ client.first_name }}</span> /
+        <span><strong>last name: </strong>{{ client.last_name }}</span> /
+        <span><strong>total orders: </strong>{{ client.orders.all.count }}</span> /
+        <span><strong>manager orders: </strong>{{ orders.count }}</span>
+      </p>
+      {% include "includes/orders.html" with order_list=client.orders.all %}
+    </div>
+
+  </div>
+{% endblock %}

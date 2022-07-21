@@ -1,0 +1,27 @@
+{% for size, ordersets in ordersets.items %}
+  <div class="col-md justify-content-center">
+    <div class="d-flex justify-content-center">
+      <h5>Frame {{ size }}x
+      <a href="#">+</a>
+      </h5>
+      <span>{{ orderset }}</span>
+    </div>
+    <ul style="padding-left: 0">
+      {% for orderset in ordersets %}
+        <div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
+          <div class="card-header">{{ orderset.set }} - {{ orderset.amount }}pc
+            <a class="text-dark badge bg-warning text-wrap text-decoration-none" href="{% url 'configurator:set_edit' pk=orderset.set.id %}">edit</a>
+            <a class="text-dark badge bg-danger text-wrap text-decoration-none" href="{% url 'configurator:set_delete' pk=orderset.set.id %}">delete</a>
+          </div>
+          <div class="card-body">
+            <ul style="padding: 5px">
+              {% for product in orderset.set.products.all %}
+                <li style="list-style-type: disc">{{ product.component }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endfor %}
+    </ul>
+  </div>
+{% endfor %}
