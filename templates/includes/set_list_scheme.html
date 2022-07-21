@@ -1,7 +1,10 @@
 {% for size, ordersets in ordersets.items %}
   <div class="col-md justify-content-center">
     <div class="d-flex justify-content-center">
-      <h5>Frame {{ size }}x</h5>
+      <h5>Frame {{ size }}x
+      <a href="#">+</a>
+      </h5>
+      <span>{{ orderset }}</span>
     </div>
     <ul style="padding-left: 0">
       {% for orderset in ordersets %}

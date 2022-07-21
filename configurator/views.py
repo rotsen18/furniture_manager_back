@@ -31,8 +31,6 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
 class OrderDetailView(LoginRequiredMixin, generic.DetailView):
     model = Order
 
-
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order_sets = get_list_with_kits(self.object)
@@ -79,6 +77,13 @@ class OrderCreateView(LoginRequiredMixin, generic.CreateView):
     ]
 
 
+def copy_order(request, pk):
+    order = Order.objects.get(pk=pk)
+    order.id = None
+    order.save()
+    return HttpResponseRedirect(reverse("configurator:order_detail", args=[order.id]))
+
+
 class ManagerDetailView(LoginRequiredMixin, generic.DetailView):
     model = Manager
 
@@ -123,12 +128,11 @@ class ColorCreateView(LoginRequiredMixin, generic.CreateView):
 class SetUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Set
     fields = "__all__"
-    # order_id = None
 
     def get_success_url(self):
         order_id = OrderSet.objects.filter(set=self.object).first().id
         self.success_url = reverse_lazy("configurator:order_detail", args=[order_id])
-        return str(self.success_url)  # success_url may be lazy
+        return str(self.success_url)
 
 
 class SetDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -140,11 +144,10 @@ class SetDeleteView(LoginRequiredMixin, generic.DeleteView):
         return str(self.success_url)
 
 
-def copy_order(request, pk):
-    order = Order.objects.get(pk=pk)
-    order.id = None
-    order.save()
-    return HttpResponseRedirect(reverse("configurator:order_detail", args=[order.id]))
+class OrderSetCreateView(LoginRequiredMixin, generic.CreateView):
+    model = OrderSet
+    fields = "__all__"
+    success_url = reverse_lazy("configurator:orders_list")
 
 
 @login_required
