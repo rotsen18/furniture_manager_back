@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <div class="container">
+    <h1>Add new orderset</h1>
+
+    <form method="post">
+      {{ formset.management_form }}
+      {% for form in formset %}
+        {{ form|crispy }}
+      {% endfor %}
+    </form>
+
+  </div>
+{% endblock %}

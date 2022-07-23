@@ -65,8 +65,6 @@ def change_serie(new_serie: str):
 
 
 def get_list_with_kits(order):
-    sets = order.sets.all()
-    # TODO finish query
     result = {"vertical": {}, "horizontal": {}}
     for i in range(1, 7):
         result["horizontal"][i] = []
@@ -74,10 +72,11 @@ def get_list_with_kits(order):
 
     order_sets = OrderSet.objects.filter(order=order)
     for order_set in order_sets:
-        if order_set.set.products.filter(component__name__contains="frame v").exists():
-            result["vertical"][order_set.set.size].append(order_set)
-        else:
-            result["horizontal"][order_set.set.size].append(order_set)
+        if order_set.set.frame:
+            if "frame v" in order_set.set.frame.component.name:
+                result["vertical"][order_set.set.size].append(order_set)
+                continue
+        result["horizontal"][order_set.set.size].append(order_set)
 
     return result
 
@@ -85,7 +84,12 @@ def get_list_with_kits(order):
 def get_products_list_in_order(order):
     products = {}
     for set_ in order.sets.all():
-        for product in set_.products.all():
-            products[product] = products.get(product, 0) + 1
+        for place in set_.places.all():
+            if place.mechanism:
+                products[place.mechanism] = products.get(place.mechanism, 0) + 1
+            if place.cover:
+                products[place.cover] = products.get(place.cover, 0) + 1
+            if place.additional:
+                products[place.additional] = products.get(place.additional, 0) + 1
     return products
 

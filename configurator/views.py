@@ -1,10 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms import modelformset_factory, inlineformset_factory
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
+from configurator.forms import PlaceCreateForm, SetCreateForm
 from configurator.models import (
     Order,
     Product,
@@ -14,7 +16,7 @@ from configurator.models import (
     Series,
     Color,
     Set,
-    OrderSet,
+    OrderSet, Place,
 )
 from queries import get_products_list_in_order, get_list_with_kits
 
@@ -47,8 +49,7 @@ class OrderDetailView(LoginRequiredMixin, generic.DetailView):
         order_sets = get_list_with_kits(self.object)
         products = get_products_list_in_order(self.object)
 
-        context["horizontal"] = order_sets["horizontal"]
-        context["vertical"] = order_sets["vertical"]
+        context.update(order_sets)
         context["products"] = products
 
         return context
@@ -129,11 +130,35 @@ class ManufacturerCreateView(LoginRequiredMixin, generic.CreateView):
 class SeriesCreateView(LoginRequiredMixin, generic.CreateView):
     model = Series
     fields = "__all__"
+    success_url = reverse_lazy("configurator:index")
 
 
 class ColorCreateView(LoginRequiredMixin, generic.CreateView):
     model = Color
     fields = "__all__"
+    success_url = reverse_lazy("configurator:index")
+
+
+def set_create_view(request):
+    size = request.GET.get("size")
+    order_id = request.GET.get("order", "")
+    order = Order.objects.get(id=order_id)
+    frame = Product.objects.filter(
+        component__name__contains="frame",
+        component__size=size,
+        series=order.serie,
+        color=order.frame_color
+    ).first()
+    form = SetCreateForm(initial={"size": size, "frame": frame})
+    if request.method == "POST":
+        form = SetCreateForm(request.POST)
+        if form.is_valid():
+            set_ = form.save()
+            OrderSet.objects.create(order=order, set=set_)
+            return HttpResponseRedirect(reverse("configurator:order_detail", args=[order.id]))
+        else:
+            print(form.errors)
+    return render(request, "configurator/set_form.html", {"form": form})
 
 
 class SetUpdateView(LoginRequiredMixin, generic.UpdateView):
@@ -141,7 +166,7 @@ class SetUpdateView(LoginRequiredMixin, generic.UpdateView):
     fields = "__all__"
 
     def get_success_url(self):
-        order_id = OrderSet.objects.filter(set=self.object).first().id
+        order_id = OrderSet.objects.filter(set=self.object).first().order.id
         self.success_url = reverse_lazy("configurator:order_detail", args=[order_id])
         return str(self.success_url)
 
@@ -150,7 +175,7 @@ class SetDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Set
 
     def get_success_url(self):
-        order_id = OrderSet.objects.filter(set=self.object).first().id
+        order_id = OrderSet.objects.filter(set=self.object).first().order.id
         self.success_url = reverse_lazy("configurator:order_detail", args=[order_id])
         return str(self.success_url)
 
@@ -178,3 +203,39 @@ def change_q3(request):
     context = {"products": new_products}
 
     return render(request, "configurator/changed_products.html", context=context)
+
+
+def create_place_view(request, pk):
+    set_ = Set.objects.get(id=pk)
+    if set_.places.count() >= set_.size:
+        return render(request, "configurator/place_too_mach.html")
+    form = PlaceCreateForm(initial={"set": set_})
+    if request.method == "POST":
+        form = PlaceCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            order = OrderSet.objects.filter(set=set_).first().order
+            print(order, order.id)
+            return HttpResponseRedirect(reverse("configurator:order_detail", args=[order.id]))
+        else:
+            print(form.errors)
+    return render(request, "configurator/place_form.html", {"form": form})
+
+
+class PlaceUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Place
+    fields = ("mechanism", "cover", "additional")
+
+    def get_success_url(self):
+        order_id = OrderSet.objects.filter(set=self.object.set).first().order.id
+        self.success_url = reverse_lazy("configurator:order_detail", args=[order_id])
+        return str(self.success_url)
+
+
+class PlaceDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Place
+
+    def get_success_url(self):
+        order_id = OrderSet.objects.filter(set=self.object.set).first().order.id
+        self.success_url = reverse_lazy("configurator:order_detail", args=[order_id])
+        return str(self.success_url)
