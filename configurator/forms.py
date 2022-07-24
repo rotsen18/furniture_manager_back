@@ -10,7 +10,7 @@ class OrderCreateForm(Form):
 class PlaceCreateForm(ModelForm):
     class Meta:
         model = Place
-        fields = "__all__"
+        fields = ("mechanism", "cover", "additional")
 
 
 class SetCreateForm(ModelForm):

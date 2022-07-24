@@ -93,3 +93,22 @@ def get_products_list_in_order(order):
                 products[place.additional] = products.get(place.additional, 0) + 1
     return products
 
+
+def get_filtered_fields_form(form, order):
+    form.fields["cover"].queryset = Product.objects.filter(
+        type__name="cover",
+        series=order.serie,
+        color=order.cover_color
+    )
+    form.fields["mechanism"].queryset = Product.objects.filter(
+        type__name="mechanism",
+        series=order.serie,
+        color__name__in=[order.cover_color.name, "no color"]
+    )
+    form.fields["additional"].queryset = Product.objects.filter(
+        type__name="additional",
+        series=order.serie,
+        color__name__in=[order.cover_color.name, "no color"]
+    )
+
+    return form

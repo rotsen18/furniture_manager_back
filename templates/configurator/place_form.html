@@ -3,6 +3,8 @@
 {% block content %}
   <div class="container">
     <h1>{{ object|yesno:"Update, Create" }} place</h1>
+    <p><strong>Order: </strong>{{ order }}</p>
+    <p><strong>Set: </strong>{{ set }}</p>
     {% include "includes/all_fields_form.html" %}
   </div>
 {% endblock %}

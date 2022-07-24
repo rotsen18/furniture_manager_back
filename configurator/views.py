@@ -18,12 +18,12 @@ from configurator.models import (
     Set,
     OrderSet, Place,
 )
-from queries import get_products_list_in_order, get_list_with_kits
+from queries import get_products_list_in_order, get_list_with_kits, \
+    get_filtered_fields_form
 
 
 @login_required
 def index(request):
-
     context = {
         "orders_count": Order.objects.filter(manager=request.user).count(),
         "clients_count": Client.objects.filter(orders__manager=request.user)
@@ -93,7 +93,8 @@ def copy_order(request, pk):
     order = Order.objects.get(pk=pk)
     order.id = None
     order.save()
-    return HttpResponseRedirect(reverse("configurator:order_detail", args=[order.id]))
+    return HttpResponseRedirect(
+        reverse("configurator:order_detail", args=[order.id]))
 
 
 class ManagerDetailView(LoginRequiredMixin, generic.DetailView):
@@ -155,7 +156,8 @@ def set_create_view(request):
         if form.is_valid():
             set_ = form.save()
             OrderSet.objects.create(order=order, set=set_)
-            return HttpResponseRedirect(reverse("configurator:order_detail", args=[order.id]))
+            return HttpResponseRedirect(
+                reverse("configurator:order_detail", args=[order.id]))
         else:
             print(form.errors)
     return render(request, "configurator/set_form.html", {"form": form})
@@ -167,7 +169,8 @@ class SetUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     def get_success_url(self):
         order_id = OrderSet.objects.filter(set=self.object).first().order.id
-        self.success_url = reverse_lazy("configurator:order_detail", args=[order_id])
+        self.success_url = reverse_lazy("configurator:order_detail",
+                                        args=[order_id])
         return str(self.success_url)
 
 
@@ -176,7 +179,8 @@ class SetDeleteView(LoginRequiredMixin, generic.DeleteView):
 
     def get_success_url(self):
         order_id = OrderSet.objects.filter(set=self.object).first().order.id
-        self.success_url = reverse_lazy("configurator:order_detail", args=[order_id])
+        self.success_url = reverse_lazy("configurator:order_detail",
+                                        args=[order_id])
         return str(self.success_url)
 
 
@@ -202,33 +206,52 @@ def change_q3(request):
             new_products.append(queryset.first())
     context = {"products": new_products}
 
-    return render(request, "configurator/changed_products.html", context=context)
+    return render(request, "configurator/changed_products.html",
+                  context=context)
 
 
 def create_place_view(request, pk):
     set_ = Set.objects.get(id=pk)
+    order = set_.order_set.first()
+
     if set_.places.count() >= set_.size:
         return render(request, "configurator/place_too_mach.html")
+
     form = PlaceCreateForm(initial={"set": set_})
+    form = get_filtered_fields_form(form, order)
+
     if request.method == "POST":
         form = PlaceCreateForm(request.POST)
         if form.is_valid():
             form.save()
-            order = OrderSet.objects.filter(set=set_).first().order
-            print(order, order.id)
-            return HttpResponseRedirect(reverse("configurator:order_detail", args=[order.id]))
+            return HttpResponseRedirect(
+                reverse("configurator:order_detail", args=[order.id]))
         else:
             print(form.errors)
-    return render(request, "configurator/place_form.html", {"form": form})
+    context = {
+        "form": form,
+        "set": set_,
+        "order": order
+    }
+    return render(request, "configurator/place_form.html", context=context)
 
 
 class PlaceUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Place
     fields = ("mechanism", "cover", "additional")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["set"] = self.object.set
+        context["order"] = self.object.set.order_set.first()
+
+        return context
+
     def get_success_url(self):
-        order_id = OrderSet.objects.filter(set=self.object.set).first().order.id
-        self.success_url = reverse_lazy("configurator:order_detail", args=[order_id])
+        order_id = OrderSet.objects.filter(
+            set=self.object.set).first().order.id
+        self.success_url = reverse_lazy("configurator:order_detail",
+                                        args=[order_id])
         return str(self.success_url)
 
 
@@ -236,6 +259,9 @@ class PlaceDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Place
 
     def get_success_url(self):
-        order_id = OrderSet.objects.filter(set=self.object.set).first().order.id
-        self.success_url = reverse_lazy("configurator:order_detail", args=[order_id])
+        order_id = OrderSet.objects.filter(
+            set=self.object.set).first().order.id
+        self.success_url = reverse_lazy("configurator:order_detail",
+                                        args=[order_id])
+
         return str(self.success_url)
