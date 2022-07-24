@@ -1,10 +1,16 @@
 from django.forms import ModelForm, Form
 
-from configurator.models import Place, Set
+from configurator.models import Place, Set, Order
 
 
 class OrderCreateForm(Form):
     pass
+
+
+class OrderChangeForm(ModelForm):
+    class Meta:
+        model = Order
+        fields = ("serie",)
 
 
 class PlaceCreateForm(ModelForm):

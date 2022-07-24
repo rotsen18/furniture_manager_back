@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
-from configurator.forms import PlaceCreateForm, SetCreateForm
+from configurator.forms import PlaceCreateForm, SetCreateForm, OrderChangeForm
 from configurator.models import (
     Order,
     Product,
@@ -19,7 +19,7 @@ from configurator.models import (
     OrderSet, Place,
 )
 from queries import get_products_list_in_order, get_list_with_kits, \
-    get_filtered_fields_form, copy_order
+    get_filtered_fields_form, copy_order, change_order_serie
 
 
 @login_required
@@ -187,25 +187,21 @@ class OrderSetCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("configurator:orders_list")
 
 
-@login_required
 def change_serie(request, pk):
     order = Order.objects.get(id=pk)
-    new_products = []
-    # for set_ in order.sets.all():
-    #     for place in set_.places.all():
-    #
-    #     for product in set_.products.all():
-    #         queryset = Product.objects.filter(
-    #             manufacturer=product.manufacturer,
-    #             series__name__in=["Q3"],
-    #             type=product.type,
-    #             component=product.component,
-    #             color=product.color,
-    #         )
-    #         new_products.append(queryset.first())
-    context = {"products": new_products}
+    form = OrderChangeForm(instance=order)
+    products = get_products_list_in_order(order)
+    context = {"products": products, }
+    if request.method == "POST":
+        form = OrderChangeForm(request.POST)
+        if form.is_valid():
+            new_serie = form.cleaned_data["serie"]
+            new_order = change_order_serie(order, new_serie)
+            context["new_products"] = get_products_list_in_order(new_order)
 
-    return render(request, "configurator/changed_products.html",
+    context["form"] = form
+
+    return render(request, "configurator/order_change_serie.html",
                   context=context)
 
 

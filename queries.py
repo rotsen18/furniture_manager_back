@@ -26,7 +26,7 @@ def get_types(serie: str):
     """
     query = Product.objects.select_related(
         "color", "serie", "component",
-        "manufacturer", "type_currency", "type").filter(series__name=serie)\
+        "manufacturer", "type_currency", "type").filter(series__name=serie) \
         .values("type__name", "component__name").distinct()
     result = {}
     for element in query:
@@ -47,7 +47,7 @@ def get_colors(serie: str):
     :return: {'Рамка': ['полярний білий', 'антрацит'],
     'Механізм': ['без кольору'], 'Накладка': ['полярний білий']}
     """
-    query = Color.objects.filter(product__series__name=serie)\
+    query = Color.objects.filter(product__series__name=serie) \
         .values("product__type__name", "name").distinct()
 
     result = {}
@@ -62,8 +62,61 @@ def get_colors(serie: str):
     return result
 
 
-def change_serie(new_serie: str):
-    pass
+def change_order_serie(order, new_serie):
+    pk = order.id
+    order.id = None
+    order.save()
+    new_order = order
+    old_order = Order.objects.get(pk=pk)
+    for old_set in old_order.sets.all():
+        old_orderset = OrderSet.objects.get(set=old_set, order=old_order)
+        frame = None
+        if old_set.frame:
+            frame = Product.objects.filter(
+                series=new_serie,
+                component=old_set.frame.component,
+                color=old_set.frame.color
+            ).first()
+
+        new_set = Set.objects.create(
+            size=old_set.size,
+            frame=frame
+        )
+        OrderSet.objects.create(
+            order=new_order, set=new_set, amount=old_orderset.amount
+        )
+        for place in old_set.places.all():
+            mechanism = None
+            if place.mechanism:
+                mechanism = Product.objects.filter(
+                    series=new_serie,
+                    component=place.mechanism.component,
+                    color=place.mechanism.color
+                ).first()
+
+            cover = None
+            if place.cover:
+                cover = Product.objects.filter(
+                    series=new_serie,
+                    component=place.cover.component,
+                    color=place.cover.color
+                ).first()
+
+            additional = None
+            if place.additional:
+                additional = Product.objects.filter(
+                    series=new_serie,
+                    component=place.additional.component,
+                    color=place.additional.color
+                ).first()
+
+            new_set.places.create(
+                mechanism=mechanism,
+                cover=cover,
+                additional=additional,
+            )
+
+    return new_order
 
 
 def get_list_with_kits(order):
@@ -86,13 +139,18 @@ def get_list_with_kits(order):
 def get_products_list_in_order(order):
     products = {}
     for set_ in order.sets.all():
+        if set_.frame:
+            products[set_.frame] = products.get(set_.frame,
+                                                     0) + 1
         for place in set_.places.all():
             if place.mechanism:
-                products[place.mechanism] = products.get(place.mechanism, 0) + 1
+                products[place.mechanism] = products.get(place.mechanism,
+                                                         0) + 1
             if place.cover:
                 products[place.cover] = products.get(place.cover, 0) + 1
             if place.additional:
-                products[place.additional] = products.get(place.additional, 0) + 1
+                products[place.additional] = products.get(place.additional,
+                                                          0) + 1
     return products
 
 

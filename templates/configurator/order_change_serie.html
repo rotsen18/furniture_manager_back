@@ -1,9 +1,64 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 
 {% block content %}
   <div class="container">
-    <h1>Change order serie</h1>
-    <p><strong>current serie:</strong> </p>
-
+    <div class="row">
+      <form class="form-inline" action="" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" name="submit">
+      </form>
+    </div>
+    <div class="row">
+      <div class="col">
+      <h5>Previous order</h5>
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Article</th>
+            <th scope="col">Name</th>
+            <th scope="col">Amount</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for product, amount in products.items %}
+            <tr class="table-default">
+              <th scope="row">{{ product.id }}</th>
+              <td>{{ product.article }}</td>
+              <td>{{ product }}</td>
+              <td>{{ amount }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="col">
+      <h5>Modified order</h5>
+        {% if new_products %}
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Article</th>
+              <th scope="col">Name</th>
+              <th scope="col">Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for product, amount in new_products.items %}
+              <tr class="table-default">
+                <th scope="row">{{ product.id }}</th>
+                <td>{{ product.article }}</td>
+                <td>{{ product }}</td>
+                <td>{{ amount }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+      </div>
+    </div>
   </div>
 {% endblock %}
