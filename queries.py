@@ -1,5 +1,7 @@
+from django.db import transaction
+
 from configurator.models import Manufacturer, Series, Product, Type, Color, \
-    Order, OrderSet
+    Order, OrderSet, Set
 
 
 def get_manufacturers():
@@ -112,3 +114,30 @@ def get_filtered_fields_form(form, order):
     )
 
     return form
+
+
+def copy_order(order_id):
+    order = Order.objects.get(pk=order_id)
+    with transaction.atomic():
+        order.id = None
+        order.save()
+        new_order = order
+        old_order = Order.objects.get(pk=order_id)
+        for old_set in old_order.sets.all():
+            old_orderset = OrderSet.objects.get(set=old_set, order=old_order)
+            new_set = Set.objects.create(
+                size=old_set.size,
+                frame=old_set.frame
+            )
+            OrderSet.objects.create(
+                order=new_order, set=new_set, amount=old_orderset.amount
+            )
+            for place in old_set.places.all():
+                new_set.places.create(
+                    mechanism=place.mechanism,
+                    cover=place.cover,
+                    additional=place.additional,
+                )
+        return new_order
+
+    return order

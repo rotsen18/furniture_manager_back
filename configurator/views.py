@@ -19,7 +19,7 @@ from configurator.models import (
     OrderSet, Place,
 )
 from queries import get_products_list_in_order, get_list_with_kits, \
-    get_filtered_fields_form
+    get_filtered_fields_form, copy_order
 
 
 @login_required
@@ -89,12 +89,9 @@ class OrderCreateView(LoginRequiredMixin, generic.CreateView):
     ]
 
 
-def copy_order(request, pk):
-    order = Order.objects.get(pk=pk)
-    order.id = None
-    order.save()
-    return HttpResponseRedirect(
-        reverse("configurator:order_detail", args=[order.id]))
+def dublicate_order_view(request, pk):
+    new_order = copy_order(pk)
+    return HttpResponseRedirect(reverse_lazy("configurator:order_detail", args=[new_order.id]))
 
 
 class ManagerDetailView(LoginRequiredMixin, generic.DetailView):
@@ -191,19 +188,21 @@ class OrderSetCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 @login_required
-def change_q3(request):
-    order = Order.objects.get(id=1)
+def change_serie(request, pk):
+    order = Order.objects.get(id=pk)
     new_products = []
-    for set_ in order.sets.all():
-        for product in set_.products.all():
-            queryset = Product.objects.filter(
-                manufacturer=product.manufacturer,
-                series__name__in=["Q3"],
-                type=product.type,
-                component=product.component,
-                color=product.color,
-            )
-            new_products.append(queryset.first())
+    # for set_ in order.sets.all():
+    #     for place in set_.places.all():
+    #
+    #     for product in set_.products.all():
+    #         queryset = Product.objects.filter(
+    #             manufacturer=product.manufacturer,
+    #             series__name__in=["Q3"],
+    #             type=product.type,
+    #             component=product.component,
+    #             color=product.color,
+    #         )
+    #         new_products.append(queryset.first())
     context = {"products": new_products}
 
     return render(request, "configurator/changed_products.html",
