@@ -4,7 +4,7 @@ from django.contrib.auth import views
 from configurator.models import OrderSet
 from configurator.views import (
     index,
-    change_q3,
+    change_serie,
     OrderListView,
     OrderDetailView,
     ClientListView,
@@ -20,19 +20,24 @@ from configurator.views import (
     OrderUpdateView,
     SetUpdateView,
     SetDeleteView,
-    copy_order,
+    set_create_view,
+    create_place_view,
+    PlaceUpdateView,
+    PlaceDeleteView,
+    dublicate_order_view,
 )
 
 
 urlpatterns = [
     path("", index, name="index"),
-    path("change_q3/", change_q3, name="change_q3"),
+
     path("orders/", OrderListView.as_view(), name="orders_list"),
+    path("orders/<int:pk>/change_serie/", change_serie, name="change_serie"),
     path("orders/<int:pk>/", OrderDetailView.as_view(), name="order_detail"),
     path("orders/<int:pk>/edit/", OrderUpdateView.as_view(), name="order_edit"),
     path("orders/<int:pk>/delete/", OrderDeleteView.as_view(), name="order_delete"),
     path("orders/create", OrderCreateView.as_view(), name="order_create"),
-    path("orders/<int:pk>/copy/", copy_order, name="order_copy"),
+    path("orders/<int:pk>/copy/", dublicate_order_view, name="order_copy"),
     path("managers/<int:pk>/", ManagerDetailView.as_view(), name="manager_detail"),
     path("clients/", ClientListView.as_view(), name="client_list"),
     path("clients/<int:pk>/", ClientDetailView.as_view(), name="client_detail"),
@@ -45,9 +50,15 @@ urlpatterns = [
     ),
     path("series/create/", SeriesCreateView.as_view(), name="series_create"),
     path("color/create/", ColorCreateView.as_view(), name="color_create"),
+
     path("sets/<int:pk>/edit/", SetUpdateView.as_view(), name="set_edit"),
     path("sets/<int:pk>/delete/", SetDeleteView.as_view(), name="set_delete"),
-    #
+    path("sets/create/", set_create_view, name="set_create"),
+
+    path("place/<int:pk>/create/", create_place_view, name="place_create"),
+    path("place/<int:pk>/update/", PlaceUpdateView.as_view(), name="place_update"),
+    path("place/<int:pk>/delete/", PlaceDeleteView.as_view(), name="place_delete"),
+
     # path("login/", views.LoginView.as_view),
     # path("logout/", views.LogoutView.as_view),
 ]

@@ -2,21 +2,38 @@
   <div class="col-md justify-content-center">
     <div class="d-flex justify-content-center">
       <h5>Frame {{ size }}x
-      <a href="#">+</a>
+        <a href="{% url 'configurator:set_create' %}?order={{ order.id }}&size={{ size }}">+</a>
       </h5>
-      <span>{{ orderset }}</span>
     </div>
     <ul style="padding-left: 0">
       {% for orderset in ordersets %}
         <div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
           <div class="card-header">{{ orderset.set }} - {{ orderset.amount }}pc
-            <a class="text-dark badge bg-warning text-wrap text-decoration-none" href="{% url 'configurator:set_edit' pk=orderset.set.id %}">edit</a>
-            <a class="text-dark badge bg-danger text-wrap text-decoration-none" href="{% url 'configurator:set_delete' pk=orderset.set.id %}">delete</a>
+            <a class="text-dark badge bg-warning text-wrap text-decoration-none"
+               href="{% url 'configurator:set_edit' pk=orderset.set.id %}">edit</a>
+            <a class="text-dark badge bg-danger text-wrap text-decoration-none"
+               href="{% url 'configurator:set_delete' pk=orderset.set.id %}">delete</a>
+            <a class="text-dark badge bg-success text-wrap text-decoration-none"
+               href="{% url 'configurator:place_create' pk=orderset.set.id %}">+place</a>
           </div>
           <div class="card-body">
+            <div>{{ orderset.set.frame }}</div>
+
             <ul style="padding: 5px">
-              {% for product in orderset.set.products.all %}
-                <li style="list-style-type: disc">{{ product.component }}</li>
+              {% for place in orderset.set.places.all %}
+                <hr>
+                <ul>Place:{{ forloop.counter }}
+                  <a class="text-dark badge bg-warning text-wrap text-decoration-none"
+                     href="{% url 'configurator:place_update' pk=place.id %}">edit</a>
+                  <a class="text-dark badge bg-danger text-wrap text-decoration-none"
+                     href="{% url 'configurator:place_delete' pk=place.id %}">delete</a>
+                  {% if place.mechanism %}
+                    <li>{{ place.mechanism.component }}</li>{% endif %}
+                  {% if place.cover %}
+                    <li>{{ place.cover.component }}</li>{% endif %}
+                  {% if place.additional %}
+                    <li>{{ place.additional.component }}</li>{% endif %}
+                </ul>
               {% endfor %}
             </ul>
           </div>

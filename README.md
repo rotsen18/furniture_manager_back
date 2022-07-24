@@ -1,6 +1,6 @@
 ## Furniture manager
 
-Web application which help to sell electric furniture
+Web application which helps you sell electric furniture
 
 ## Installing / Getting started
 

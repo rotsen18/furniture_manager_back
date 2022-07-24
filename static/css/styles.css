@@ -5,3 +5,7 @@ body {
 .card-body {
     padding: 0 0 0 15px;
 }
+
+.order-container {
+    margin-right: 15px;
+}
