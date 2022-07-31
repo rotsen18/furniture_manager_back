@@ -1,11 +1,10 @@
 {% extends "base.html" %}
+{% block navbar %}
+{% endblock %}
 {% block content %}
-  <p>Index</p>
-  <p>Main paige information</p>
-  <ul>
-    <li>orders_count: {{ orders_count }}</li>
-    <li>clients_count: {{ clients_count }}</li>
-  </ul>
-
-
+  <div class="container">
+    <h1>Welcome to Furniture manager</h1>
+    <p>On this service you can very easy configure your electric furniture</p>
+    <p>If you want to try just <a href="{% url 'login' %}">login</a></p>
+  </div>
 {% endblock %}

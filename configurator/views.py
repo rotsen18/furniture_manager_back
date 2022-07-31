@@ -22,15 +22,11 @@ from queries import get_products_list_in_order, get_list_with_kits, \
     get_filtered_fields_form, copy_order, change_order_serie
 
 
-@login_required
 def index(request):
-    context = {
-        "orders_count": Order.objects.filter(manager=request.user).count(),
-        "clients_count": Client.objects.filter(orders__manager=request.user)
-        .distinct()
-        .count(),
-    }
-    return render(request, "configurator/index.html", context=context)
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("configurator:orders_list"))
+
+    return render(request, "configurator/index.html")
 
 
 class OrderListView(LoginRequiredMixin, generic.ListView):
