@@ -1,12 +1,15 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import modelformset_factory, inlineformset_factory
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
-from configurator.forms import PlaceCreateForm, SetCreateForm, OrderChangeForm
+from configurator.forms import (
+    PlaceCreateForm,
+    SetCreateForm,
+    OrderChangeSerieForm,
+    OrderChangeFrameColorForm
+)
 from configurator.models import (
     Order,
     Product,
@@ -16,10 +19,17 @@ from configurator.models import (
     Series,
     Color,
     Set,
-    OrderSet, Place,
+    OrderSet,
+    Place,
 )
-from queries import get_products_list_in_order, get_list_with_kits, \
-    get_filtered_fields_form, copy_order, change_order_serie
+from configurator.queries import (
+    get_products_list_in_order,
+    get_list_with_kits,
+    get_filtered_fields_form,
+    copy_order,
+    change_order_serie,
+    change_order_frame_color
+)
 
 
 def index(request):
@@ -185,11 +195,11 @@ class OrderSetCreateView(LoginRequiredMixin, generic.CreateView):
 
 def change_serie(request, pk):
     order = Order.objects.get(id=pk)
-    form = OrderChangeForm(instance=order)
+    form = OrderChangeSerieForm(instance=order)
     products = get_products_list_in_order(order)
     context = {"products": products, }
     if request.method == "POST":
-        form = OrderChangeForm(request.POST)
+        form = OrderChangeSerieForm(request.POST)
         if form.is_valid():
             new_serie = form.cleaned_data["serie"]
             new_order = change_order_serie(order, new_serie)
@@ -197,8 +207,32 @@ def change_serie(request, pk):
 
     context["form"] = form
 
-    return render(request, "configurator/order_change_serie.html",
-                  context=context)
+    return render(
+        request,
+        "configurator/order_change_serie.html",
+        context=context
+    )
+
+
+def change_frame_color(request, pk):
+    order = Order.objects.get(id=pk)
+    form = OrderChangeFrameColorForm(instance=order)
+    products = get_products_list_in_order(order)
+    context = {"products": products, }
+    if request.method == "POST":
+        form = OrderChangeFrameColorForm(request.POST)
+        if form.is_valid():
+            new_color = form.cleaned_data["frame_color"]
+            new_order = change_order_frame_color(order, new_color)
+            context["new_products"] = get_products_list_in_order(new_order)
+
+    context["form"] = form
+
+    return render(
+        request,
+        "configurator/order_change_serie.html",
+        context=context
+    )
 
 
 def create_place_view(request, pk):

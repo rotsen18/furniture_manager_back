@@ -7,10 +7,16 @@ class OrderCreateForm(Form):
     pass
 
 
-class OrderChangeForm(ModelForm):
+class OrderChangeSerieForm(ModelForm):
     class Meta:
         model = Order
         fields = ("serie",)
+
+
+class OrderChangeFrameColorForm(ModelForm):
+    class Meta:
+        model = Order
+        fields = ("frame_color",)
 
 
 class PlaceCreateForm(ModelForm):

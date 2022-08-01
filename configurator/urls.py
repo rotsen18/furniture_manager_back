@@ -1,7 +1,5 @@
 from django.urls import path
-from django.contrib.auth import views
 
-from configurator.models import OrderSet
 from configurator.views import (
     index,
     change_serie,
@@ -25,6 +23,7 @@ from configurator.views import (
     PlaceUpdateView,
     PlaceDeleteView,
     dublicate_order_view,
+    change_frame_color,
 )
 
 
@@ -33,15 +32,19 @@ urlpatterns = [
 
     path("orders/", OrderListView.as_view(), name="orders_list"),
     path("orders/<int:pk>/change_serie/", change_serie, name="change_serie"),
+    path("orders/<int:pk>/change_frame_color/", change_frame_color, name="change_frame_color"),
     path("orders/<int:pk>/", OrderDetailView.as_view(), name="order_detail"),
     path("orders/<int:pk>/edit/", OrderUpdateView.as_view(), name="order_edit"),
     path("orders/<int:pk>/delete/", OrderDeleteView.as_view(), name="order_delete"),
     path("orders/create", OrderCreateView.as_view(), name="order_create"),
     path("orders/<int:pk>/copy/", dublicate_order_view, name="order_copy"),
+
     path("managers/<int:pk>/", ManagerDetailView.as_view(), name="manager_detail"),
+
     path("clients/", ClientListView.as_view(), name="client_list"),
     path("clients/<int:pk>/", ClientDetailView.as_view(), name="client_detail"),
     path("clients/create/", ClientCreateView.as_view(), name="client_create"),
+
     path("products/", ProductListView.as_view(), name="product_list"),
     path(
         "manufacturers/create/",
@@ -59,8 +62,6 @@ urlpatterns = [
     path("place/<int:pk>/update/", PlaceUpdateView.as_view(), name="place_update"),
     path("place/<int:pk>/delete/", PlaceDeleteView.as_view(), name="place_delete"),
 
-    # path("login/", views.LoginView.as_view),
-    # path("logout/", views.LogoutView.as_view),
 ]
 
 

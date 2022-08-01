@@ -119,6 +119,40 @@ def change_order_serie(order, new_serie):
     return new_order
 
 
+def change_order_frame_color(order, new_color):
+    pk = order.id
+    order.id = None
+    order.save()
+    new_order = order
+    old_order = Order.objects.get(pk=pk)
+    for old_set in old_order.sets.all():
+        old_orderset = OrderSet.objects.get(set=old_set, order=old_order)
+        frame = None
+        if old_set.frame:
+            frame = Product.objects.filter(
+                series=old_order.serie,
+                component=old_set.frame.component,
+                color=new_color
+            ).first()
+
+        new_set = Set.objects.create(
+            size=old_set.size,
+            frame=frame
+        )
+        OrderSet.objects.create(
+            order=new_order, set=new_set, amount=old_orderset.amount
+        )
+        for place in old_set.places.all():
+            new_set.places.create(
+                mechanism=place.mechanism,
+                cover=place.cover,
+                additional=place.additional,
+            )
+
+    return new_order
+
+
+
 def get_list_with_kits(order):
     result = {"vertical": {}, "horizontal": {}}
     for i in range(1, 7):

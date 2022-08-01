@@ -4,7 +4,7 @@
   <br>
   <div class="order-container">
     <div class="row">
-      <div style="width: 185px" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+      <div style="width: 220px" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
         <p class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
           <svg class="bi me-2" width="40" height="32"></svg>
           <span class="fs-4">Options</span>
@@ -39,6 +39,12 @@
             <a href="{% url 'configurator:change_serie' pk=order.id %}" class="nav-link text-white">
               <svg class="bi me-2" width="16" height="16"></svg>
               Change serie
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'configurator:change_frame_color' pk=order.id %}" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16"></svg>
+              New frame color
             </a>
           </li>
         </ul>
