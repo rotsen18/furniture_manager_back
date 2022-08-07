@@ -9,3 +9,7 @@ body {
 .order-container {
     margin-right: 15px;
 }
+
+.icon-bottom {
+    vertical-align: baseline;
+}
