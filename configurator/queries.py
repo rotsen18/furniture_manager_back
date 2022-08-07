@@ -125,15 +125,27 @@ def change_order_frame_color(order, new_color):
     order.save()
     new_order = order
     old_order = Order.objects.get(pk=pk)
+    missing_products = []
+    multiple_products = []
     for old_set in old_order.sets.all():
         old_orderset = OrderSet.objects.get(set=old_set, order=old_order)
         frame = None
         if old_set.frame:
-            frame = Product.objects.filter(
+            frames = Product.objects.filter(
                 series=old_order.serie,
                 component=old_set.frame.component,
                 color=new_color
-            ).first()
+            )
+            if frames.count() == 0:
+                missing_products.append(old_set.frame)
+            elif frames.count() == 1:
+                frame = frames.first()
+            elif frames.count() > 1:
+                multiple_products.append(
+                    {"old_product": old_set.frame,
+                     "new_products": frames,
+                     }
+                )
 
         new_set = Set.objects.create(
             size=old_set.size,
@@ -149,8 +161,11 @@ def change_order_frame_color(order, new_color):
                 additional=place.additional,
             )
 
-    return new_order
-
+    return {
+        "order": new_order,
+        "missing_products": missing_products,
+        "multiple_products": multiple_products
+    }
 
 
 def get_list_with_kits(order):

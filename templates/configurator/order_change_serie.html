@@ -12,7 +12,7 @@
     </div>
     <div class="row">
       <div class="col">
-      <h5>Previous order</h5>
+        <h5>Previous order</h5>
         <table class="table table-hover">
           <thead>
           <tr>
@@ -24,18 +24,22 @@
           </thead>
           <tbody>
           {% for product, amount in products.items %}
-            <tr class="table-default">
-              <th scope="row">{{ product.id }}</th>
-              <td>{{ product.article }}</td>
-              <td>{{ product }}</td>
-              <td>{{ amount }}</td>
-            </tr>
+            {% if product in missing_products %}
+              <tr class="table-danger">
+                {% else %}
+              <tr class="table-default">
+            {% endif %}
+          <th scope="row">{{ product.id }}</th>
+          <td>{{ product.article }}</td>
+          <td>{{ product }}</td>
+          <td>{{ amount }}</td>
+          </tr>
           {% endfor %}
           </tbody>
         </table>
       </div>
       <div class="col">
-      <h5>Modified order</h5>
+        <h5>Modified order</h5>
         {% if new_products %}
           <table class="table table-hover">
             <thead>
@@ -58,6 +62,18 @@
             </tbody>
           </table>
         {% endif %}
+        <div>
+          {% if multiple_products %}
+            <h5>Multiple products</h5>
+            {% for product_set in multiple_products %}
+              <ul><strong>{{ product_set.old_product }}</strong></ul>
+              {% for product in product_set.new_products %}
+                <li>{{ product }}</li>
+              {% endfor %}
+              <hr>
+            {% endfor %}
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>

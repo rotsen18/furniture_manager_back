@@ -223,8 +223,12 @@ def change_frame_color(request, pk):
         form = OrderChangeFrameColorForm(request.POST)
         if form.is_valid():
             new_color = form.cleaned_data["frame_color"]
-            new_order = change_order_frame_color(order, new_color)
-            context["new_products"] = get_products_list_in_order(new_order)
+            new_data = change_order_frame_color(order, new_color)
+            context["new_products"] = get_products_list_in_order(
+                new_data["order"]
+            )
+            context["missing_products"] = new_data["missing_products"]
+            context["multiple_products"] = new_data["multiple_products"]
 
     context["form"] = form
 
