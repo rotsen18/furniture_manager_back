@@ -71,14 +71,17 @@ class OrderUpdateView(LoginRequiredMixin, generic.UpdateView):
     fields = [
         "client",
         "description",
+        "status",
     ]
     success_url = reverse_lazy("configurator:orders_list")
 
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.manager = self.request.user
-        self.object.save()
-        return super().form_valid(form)
+    def get_success_url(self):
+        self.success_url = reverse_lazy(
+            "configurator:order_detail",
+            args=[self.object.id]
+        )
+        return str(self.success_url)
+
 
 class OrderCreateView(LoginRequiredMixin, generic.CreateView):
     model = Order

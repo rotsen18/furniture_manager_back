@@ -88,6 +88,7 @@ class Client(models.Model):
 class Order(models.Model):  # order consists of several products
     STATUTES = [
         ("New", "New"),
+        ("Process", "Process"),
         ("Send", "Send"),
         ("Completed", "Completed"),
         ("Canceled", "Canceled"),
