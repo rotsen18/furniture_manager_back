@@ -13,8 +13,10 @@ def get_manufacturers():
 
 def get_series(manufacturer: str):
     return [
-        serie.name
-        for serie in Series.objects.filter(manufacturer__name=manufacturer)
+        serie
+        for serie in Series.objects.filter(
+            manufacturer__name=manufacturer
+        ).values("name", "id").distinct()
     ]
 
 
@@ -48,18 +50,25 @@ def get_colors(serie: str):
     'Механізм': ['без кольору'], 'Накладка': ['полярний білий']}
     """
     query = Color.objects.filter(product__series__name=serie) \
-        .values("product__type__name", "name").distinct()
+        .values("product__type__name", "name", "id").distinct()
 
     result = {}
     for element in query:
         type_ = element["product__type__name"]
-        color = element["name"]
+        color = element
         if type_ in result:
             result[type_].append(color)
         else:
             result[type_] = [color]
 
     return result
+
+
+def get_choices(objects):
+    return [
+        (obj["id"], obj["name"])
+        for obj in objects
+    ]
 
 
 def change_order_serie(order, new_serie):

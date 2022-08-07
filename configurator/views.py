@@ -28,7 +28,7 @@ from configurator.queries import (
     get_filtered_fields_form,
     copy_order,
     change_order_serie,
-    change_order_frame_color
+    change_order_frame_color, get_colors, get_choices, get_series
 )
 
 
@@ -195,17 +195,28 @@ class OrderSetCreateView(LoginRequiredMixin, generic.CreateView):
 
 def change_serie(request, pk):
     order = Order.objects.get(id=pk)
-    form = OrderChangeSerieForm(instance=order)
     products = get_products_list_in_order(order)
     context = {"products": products, }
+
+    form = OrderChangeSerieForm(instance=order)
+    choices = get_choices(get_series(order.manufacturer))
+    form.fields["serie"].choices = choices
+
     if request.method == "POST":
         form = OrderChangeSerieForm(request.POST)
+        form.fields["serie"].choices = choices
         if form.is_valid():
             new_serie = form.cleaned_data["serie"]
-            new_order = change_order_serie(order, new_serie)
-            context["new_products"] = get_products_list_in_order(new_order)
+            new_data = change_order_serie(order, new_serie)
+            context["new_products"] = get_products_list_in_order(
+                new_data["order"]
+            )
+            context["missing_products"] = new_data["missing_products"]
+            context["multiple_products"] = new_data["multiple_products"]
+            context["new_order_id"] = new_data["order"].id
 
     context["form"] = form
+    context["old_order_id"] = order.id
 
     return render(
         request,
@@ -217,6 +228,8 @@ def change_serie(request, pk):
 def change_frame_color(request, pk):
     order = Order.objects.get(id=pk)
     form = OrderChangeFrameColorForm(instance=order)
+    choices = get_choices(get_colors(order.serie)["frame"])
+    form.fields["frame_color"].choices = choices
     products = get_products_list_in_order(order)
     context = {"products": products, }
     if request.method == "POST":
@@ -231,6 +244,7 @@ def change_frame_color(request, pk):
             context["multiple_products"] = new_data["multiple_products"]
             context["new_order_id"] = new_data["order"].id
 
+    context["old_order_id"] = order.id
     context["form"] = form
 
     return render(
