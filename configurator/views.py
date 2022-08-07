@@ -229,6 +229,7 @@ def change_frame_color(request, pk):
             )
             context["missing_products"] = new_data["missing_products"]
             context["multiple_products"] = new_data["multiple_products"]
+            context["new_order_id"] = new_data["order"].id
 
     context["form"] = form
 

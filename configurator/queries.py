@@ -68,15 +68,27 @@ def change_order_serie(order, new_serie):
     order.save()
     new_order = order
     old_order = Order.objects.get(pk=pk)
+    missing_products = []
+    multiple_products = []
     for old_set in old_order.sets.all():
         old_orderset = OrderSet.objects.get(set=old_set, order=old_order)
         frame = None
         if old_set.frame:
-            frame = Product.objects.filter(
+            frames = Product.objects.filter(
                 series=new_serie,
                 component=old_set.frame.component,
                 color=old_set.frame.color
-            ).first()
+            )
+            if frames.count() == 0:
+                missing_products.append(old_set.frame)
+            elif frames.count() == 1:
+                frame = frames.first()
+            elif frames.count() > 1:
+                multiple_products.append(
+                    {"old_product": old_set.frame,
+                     "new_products": frames,
+                     }
+                )
 
         new_set = Set.objects.create(
             size=old_set.size,
@@ -88,27 +100,57 @@ def change_order_serie(order, new_serie):
         for place in old_set.places.all():
             mechanism = None
             if place.mechanism:
-                mechanism = Product.objects.filter(
+                mechanisms = Product.objects.filter(
                     series=new_serie,
                     component=place.mechanism.component,
                     color=place.mechanism.color
-                ).first()
+                )
+                if mechanisms.count() == 0:
+                    missing_products.append(place.mechanism)
+                elif mechanisms.count() == 1:
+                    mechanism = mechanisms.first()
+                elif mechanisms.count() > 1:
+                    multiple_products.append(
+                        {"old_product": place.mechanism,
+                         "new_products": mechanisms,
+                         }
+                    )
 
             cover = None
             if place.cover:
-                cover = Product.objects.filter(
+                covers = Product.objects.filter(
                     series=new_serie,
                     component=place.cover.component,
                     color=place.cover.color
-                ).first()
+                )
+                if covers.count() == 0:
+                    missing_products.append(place.cover)
+                elif covers.count() == 1:
+                    cover = covers.first()
+                elif covers.count() > 1:
+                    multiple_products.append(
+                        {"old_product": place.cover,
+                         "new_products": covers,
+                         }
+                    )
 
             additional = None
             if place.additional:
-                additional = Product.objects.filter(
+                additionals = Product.objects.filter(
                     series=new_serie,
                     component=place.additional.component,
                     color=place.additional.color
-                ).first()
+                )
+                if additionals.count() == 0:
+                    missing_products.append(place.additional)
+                elif additionals.count() == 1:
+                    additional = additionals.first()
+                elif additionals.count() > 1:
+                    multiple_products.append(
+                        {"old_product": place.additional,
+                         "new_products": additionals,
+                         }
+                    )
 
             new_set.places.create(
                 mechanism=mechanism,
@@ -116,7 +158,11 @@ def change_order_serie(order, new_serie):
                 additional=additional,
             )
 
-    return new_order
+    return {
+        "order": new_order,
+        "missing_products": missing_products,
+        "multiple_products": multiple_products
+    }
 
 
 def change_order_frame_color(order, new_color):

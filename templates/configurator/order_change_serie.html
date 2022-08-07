@@ -39,8 +39,11 @@
         </table>
       </div>
       <div class="col">
-        <h5>Modified order</h5>
         {% if new_products %}
+          <h5>Modified order
+          <a href="{% url 'configurator:order_detail' pk=new_order_id %}">detail</a>
+          <a class="text-danger" href="{% url 'configurator:order_delete' pk=new_order_id %}">delete</a>
+          </h5>
           <table class="table table-hover">
             <thead>
             <tr>
