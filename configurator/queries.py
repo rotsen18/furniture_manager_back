@@ -76,6 +76,7 @@ def change_order_serie(order, new_serie):
     order.id = None
     order.save()
     new_order = order
+    new_order.serie = new_serie
     old_order = Order.objects.get(pk=pk)
     missing_products = []
     multiple_products = []
@@ -179,6 +180,7 @@ def change_order_frame_color(order, new_color):
     order.id = None
     order.save()
     new_order = order
+    new_order.frame_color = new_color
     old_order = Order.objects.get(pk=pk)
     missing_products = []
     multiple_products = []

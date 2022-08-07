@@ -70,22 +70,20 @@ class OrderUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Order
     fields = [
         "client",
-        "manager",
         "description",
-        "manufacturer",
-        "serie",
-        "mech_color",
-        "cover_color",
-        "frame_color",
     ]
     success_url = reverse_lazy("configurator:orders_list")
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.manager = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
 class OrderCreateView(LoginRequiredMixin, generic.CreateView):
     model = Order
     fields = [
         "client",
-        "manager",
         "description",
         "manufacturer",
         "serie",
@@ -93,6 +91,19 @@ class OrderCreateView(LoginRequiredMixin, generic.CreateView):
         "cover_color",
         "frame_color",
     ]
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.manager = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        self.success_url = reverse_lazy(
+            "configurator:order_detail",
+            args=[self.object.id]
+        )
+        return str(self.success_url)
 
 
 def dublicate_order_view(request, pk):
