@@ -23,4 +23,5 @@ urlpatterns = [
     path("", include("apps.configurator.urls", namespace="configurator")),
     # path("configurator/", include("configurator.urls", namespace="configurator")),
     path("accounts/", include("django.contrib.auth.urls")),
+    path("api/v1/configurator/", include("apps.configurator.api.v1.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

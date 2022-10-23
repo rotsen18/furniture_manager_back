@@ -1,7 +1,8 @@
 from django.db import transaction
 
-from apps.configurator.models.product import Manufacturer, Series, Product, Color, \
-    Order, OrderSet, Set
+from apps.order.models import Order
+from apps.configurator.models import OrderSet, Set
+from apps.product.models import Manufacturer, Series, Product, Color
 
 
 def get_manufacturers():
@@ -197,5 +198,3 @@ def copy_order(order_id):
                     additional=place.additional,
                 )
         return new_order
-
-    return order

@@ -28,13 +28,16 @@ INSTALLED_APPS = [
     # project apps
     "furniture_manager",
     "apps.configurator",
+    "apps.core",
+    "apps.order",
+    "apps.product",
     # 3rd apps
     "django_extensions",
     "crispy_forms",
     "crispy_bootstrap5",
 ]
 
-AUTH_USER_MODEL = "configurator.Manager"
+AUTH_USER_MODEL = "core.User"
 
 LOGIN_REDIRECT_URL = "/"
 
