@@ -1,13 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import modelformset_factory, inlineformset_factory
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
-from configurator.forms import PlaceCreateForm, SetCreateForm, OrderChangeForm
-from configurator.models import (
+from apps.configurator.forms import PlaceCreateForm, SetCreateForm, OrderChangeForm
+from apps.configurator.models import (
     Order,
     Product,
     Manager,
@@ -18,7 +17,7 @@ from configurator.models import (
     Set,
     OrderSet, Place,
 )
-from queries import get_products_list_in_order, get_list_with_kits, \
+from apps.configurator.services.queries import get_products_list_in_order, get_list_with_kits, \
     get_filtered_fields_form, copy_order, change_order_serie
 
 

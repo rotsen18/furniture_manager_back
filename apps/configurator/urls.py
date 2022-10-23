@@ -1,8 +1,6 @@
 from django.urls import path
-from django.contrib.auth import views
 
-from configurator.models import OrderSet
-from configurator.views import (
+from apps.configurator.views import (
     index,
     change_serie,
     OrderListView,

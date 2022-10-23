@@ -1,6 +1,6 @@
 from django.forms import ModelForm, Form
 
-from configurator.models import Place, Set, Order
+from apps.configurator.models import Place, Set, Order
 
 
 class OrderCreateForm(Form):
