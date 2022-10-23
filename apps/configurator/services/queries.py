@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from apps.configurator.models import Manufacturer, Series, Product, Color, \
+from apps.configurator.models.product import Manufacturer, Series, Product, Color, \
     Order, OrderSet, Set
 
 

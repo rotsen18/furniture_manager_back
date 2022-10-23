@@ -6,7 +6,7 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic
 
 from apps.configurator.forms import PlaceCreateForm, SetCreateForm, OrderChangeForm
-from apps.configurator.models import (
+from apps.configurator.models.product import (
     Order,
     Product,
     Manager,

@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from apps.configurator.models import Set, OrderSet, Product, Manager, Place
-from apps.configurator.models import Series, Order, Manufacturer, Client
-from apps.configurator.models import Type, Component, Currency, Color
+from apps.configurator.models.product import Set, OrderSet, Product, Manager, Place
+from apps.configurator.models.product import Series, Order, Manufacturer, Client
+from apps.configurator.models.product import Type, Component, Currency, Color
 
 
 admin.site.register(Client)
