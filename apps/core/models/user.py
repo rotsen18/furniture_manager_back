@@ -14,3 +14,8 @@ class User(AbstractUser):
         CONSUMER = ('Consumer', 'Користувач')
 
     type_user = models.CharField(choices=TypeUserChoices.choices, default=TypeUserChoices.CONSUMER, max_length=40)
+    town = models.CharField(max_length=63, null=True, blank=True)
+    phone = models.CharField(max_length=15, unique=True, null=True, blank=True)
+
+    def __str__(self):
+        return self.username
