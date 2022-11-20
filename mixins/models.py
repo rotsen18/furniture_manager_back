@@ -6,7 +6,7 @@ from django.utils import timezone
 User = settings.AUTH_USER_MODEL
 
 
-class SingleNameMixin(models.Model):
+class NameMixin(models.Model):
     name = models.CharField(max_length=200, default='', blank=True)
 
     class Meta:
@@ -24,9 +24,8 @@ class DateTimeMixin(models.Model):
         abstract = True
 
 
-class AuthorMixin(models.Model):
-    # TODO add default user
-    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+class UserMixin(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     class Meta:
         abstract = True
