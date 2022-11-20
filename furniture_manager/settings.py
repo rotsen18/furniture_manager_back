@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "furniture_manager",
     "apps.configurator",
     "apps.core",
+    "apps.directory",
     "apps.order",
     "apps.product",
     # 3rd apps

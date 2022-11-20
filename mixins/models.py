@@ -25,7 +25,6 @@ class DateTimeMixin(models.Model):
 
 
 class AuthorMixin(models.Model):
-    # TODO add default user
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     class Meta:
