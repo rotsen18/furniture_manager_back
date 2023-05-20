@@ -22,34 +22,40 @@ class Order(DateTimeMixin):
         on_delete=models.CASCADE,
     )
     description = models.CharField(max_length=255, null=True, blank=True)
-    manufacturer = models.ForeignKey(
-        "product.Manufacturer", null=True, on_delete=models.CASCADE
-    )
-    serie = models.ForeignKey("product.Series", null=True, on_delete=models.CASCADE)
+    manufacturer = models.ForeignKey("catalogue.Manufacturer", null=True, on_delete=models.CASCADE)
+    series = models.ForeignKey("catalogue.Series", null=True, on_delete=models.CASCADE)
     mech_color = models.ForeignKey(
-        "product.Color", default=2, related_name="mech_colors", on_delete=models.SET_DEFAULT
+        "directory.Color",
+        default=2,
+        related_name="mech_colors",
+        on_delete=models.SET_DEFAULT
     )
     cover_color = models.ForeignKey(
-        "product.Color", default=5, related_name="cover_colors", on_delete=models.SET_DEFAULT
+        "directory.Color",
+        default=5,  # TODO change default color to white, check other colors in order
+        related_name="cover_colors",
+        on_delete=models.SET_DEFAULT  # TODO think about default color
     )
     frame_color = models.ForeignKey(
-        "product.Color", default=5, related_name="frame_colors", on_delete=models.SET_DEFAULT
+        "directory.Color",
+        default=5,
+        related_name="frame_colors",
+        on_delete=models.SET_DEFAULT
     )
-    sets = models.ManyToManyField("configurator.Set", through="configurator.OrderSet")
+    place_sets = models.ManyToManyField("configurator.PlaceSet", through="OrderSet")
+    status = models.ForeignKey('directory.OrderStatus', on_delete=models.PROTECT, default=1)
 
     def __str__(self):
         return f"{self.id} {self.client} {self.description}"
 
 
+class OrderSet(models.Model):
+    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+    place_set = models.ForeignKey("configurator.PlaceSet", on_delete=models.CASCADE)
+    amount = models.IntegerField(default=1)
+
+
 class OrderStatusHistory(DateTimeMixin):
-    class OrderStatusesChoices(models.TextChoices):
-        NEW = ("New", "New")
-        PROCESS = ('Process', 'Process')
-        SEND = ("Send", "Send")
-        DELIVERY = ("Delivery", "Delivery")
-        DELIVERED = ("Delivered", "Delivered")
-        COMPLETED = ("Completed", "Completed")
-        CANCELED = ("Canceled", "Canceled")
 
     order = models.ForeignKey("Order", on_delete=models.PROTECT)
-    status = models.CharField(max_length=33, choices=OrderStatusesChoices.choices, default=OrderStatusesChoices.NEW)
+    status = models.ForeignKey('directory.OrderStatus', on_delete=models.CASCADE)

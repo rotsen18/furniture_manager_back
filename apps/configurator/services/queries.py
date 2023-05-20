@@ -1,8 +1,9 @@
 from django.db import transaction
 
-from apps.order.models import Order
-from apps.configurator.models import OrderSet, Set
-from apps.product.models import Manufacturer, Series, Product, Color
+from apps.order.models import Order, OrderSet
+from apps.configurator.models import PlaceSet
+from apps.catalogue.models.product import Manufacturer, Series, Product
+from apps.directory.models.product import Color
 
 
 def get_manufacturers():
@@ -69,7 +70,7 @@ def change_order_serie(order, new_serie):
     order.save()
     new_order = order
     old_order = Order.objects.get(pk=pk)
-    for old_set in old_order.sets.all():
+    for old_set in old_order.place_sets.all():
         old_orderset = OrderSet.objects.get(set=old_set, order=old_order)
         frame = None
         if old_set.frame:
@@ -79,7 +80,7 @@ def change_order_serie(order, new_serie):
                 color=old_set.frame.color
             ).first()
 
-        new_set = Set.objects.create(
+        new_set = PlaceSet.objects.create(
             size=old_set.size,
             frame=frame
         )
@@ -128,18 +129,18 @@ def get_list_with_kits(order):
 
     order_sets = OrderSet.objects.filter(order=order)
     for order_set in order_sets:
-        if order_set.set.frame:
-            if "frame v" in order_set.set.frame.component.name:
-                result["vertical"][order_set.set.size].append(order_set)
+        if order_set.place_set.frame:
+            if "frame v" in order_set.place_set.frame.component.name:
+                result["vertical"][order_set.place_set.size].append(order_set)
                 continue
-        result["horizontal"][order_set.set.size].append(order_set)
+        result["horizontal"][order_set.place_set.size].append(order_set)
 
     return result
 
 
 def get_products_list_in_order(order):
     products = {}
-    for set_ in order.sets.all():
+    for set_ in order.place_sets.all():
         if set_.frame:
             products[set_.frame] = products.get(set_.frame,
                                                      0) + 1
@@ -158,17 +159,17 @@ def get_products_list_in_order(order):
 def get_filtered_fields_form(form, order):
     form.fields["cover"].queryset = Product.objects.filter(
         type__name="cover",
-        series=order.serie,
+        series=order.series,
         color=order.cover_color
     )
     form.fields["mechanism"].queryset = Product.objects.filter(
         type__name="mechanism",
-        series=order.serie,
+        series=order.series,
         color__name__in=[order.cover_color.name, "no color"]
     )
     form.fields["additional"].queryset = Product.objects.filter(
         type__name="additional",
-        series=order.serie,
+        series=order.series,
         color__name__in=[order.cover_color.name, "no color"]
     )
 
@@ -182,9 +183,9 @@ def copy_order(order_id):
         order.save()
         new_order = order
         old_order = Order.objects.get(pk=order_id)
-        for old_set in old_order.sets.all():
+        for old_set in old_order.place_sets.all():
             old_orderset = OrderSet.objects.get(set=old_set, order=old_order)
-            new_set = Set.objects.create(
+            new_set = PlaceSet.objects.create(
                 size=old_set.size,
                 frame=old_set.frame
             )

@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'apps.configurator',
     'apps.core',
     'apps.order',
-    'apps.product',
+    'apps.catalogue',
+    'apps.directory',
     # 3rd apps
     'django_extensions',
     'crispy_forms',

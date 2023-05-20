@@ -7,7 +7,7 @@ class OrderCreateForm(forms.Form):
     pass
 
 
-# class OrderChangeForm(forms.ModelForm):
-#     class Meta:
-#         model = Order
-#         fields = ("serie",)
+class OrderChangeForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ("series",)

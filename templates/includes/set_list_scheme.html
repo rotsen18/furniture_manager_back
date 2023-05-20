@@ -8,13 +8,13 @@
     <ul style="padding-left: 0">
       {% for orderset in ordersets %}
         <div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
-          <div class="card-header">{{ orderset.set }} - {{ orderset.amount }}pc
+          <div class="card-header">{{ orderset.place_set }} - {{ orderset.amount }}pc
             <a class="text-dark badge bg-warning text-wrap text-decoration-none"
-               href="{% url 'configurator:set_edit' pk=orderset.set.id %}">edit</a>
+               href="{% url 'configurator:set_edit' pk=orderset.place_set.id %}">edit</a>
             <a class="text-dark badge bg-danger text-wrap text-decoration-none"
-               href="{% url 'configurator:set_delete' pk=orderset.set.id %}">delete</a>
+               href="{% url 'configurator:set_delete' pk=orderset.place_set.id %}">delete</a>
             <a class="text-dark badge bg-success text-wrap text-decoration-none"
-               href="{% url 'configurator:place_create' pk=orderset.set.id %}">+place</a>
+               href="{% url 'configurator:place_create' pk=orderset.place_set.id %}">+place</a>
           </div>
           <div class="card-body">
             <div>{{ orderset.set.frame }}</div>
