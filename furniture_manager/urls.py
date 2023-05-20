@@ -19,12 +19,12 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("apps.configurator.urls", namespace="configurator")),
+    path('admin/', admin.site.urls),
+    path('', include('apps.configurator.urls', namespace='configurator')),
     # path("configurator/", include("configurator.urls", namespace="configurator")),
-    path("accounts/", include("django.contrib.auth.urls")),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('directory/', include('apps.directory.urls')),
     path('catalogue/', include('apps.catalogue.urls')),
     path('order/', include('apps.order.urls')),
-    path("api/v1/configurator/", include("apps.configurator.api.v1.urls")),
+    path('api/v1/configurator/', include('apps.configurator.api.v1.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

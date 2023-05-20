@@ -10,4 +10,4 @@ class OrderCreateForm(forms.Form):
 class OrderChangeForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ("series",)
+        fields = ('series',)

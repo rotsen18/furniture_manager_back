@@ -4,7 +4,7 @@ from django.db import models
 
 
 def get_sentinel_user():
-    return settings.AUTH_USER_MODEL.objects.get_or_create(username="deleted")[0]
+    return settings.AUTH_USER_MODEL.objects.get_or_create(username='deleted')[0]
 
 
 class User(AbstractUser):

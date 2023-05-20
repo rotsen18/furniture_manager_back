@@ -27,13 +27,13 @@ def get_types(serie: str):
     'Накладка': ['Клавіша 1кл вимикача']}
     """
     query = Product.objects.select_related(
-        "color", "serie", "component",
-        "manufacturer", "type_currency", "type").filter(series__name=serie) \
-        .values("type__name", "component__name").distinct()
+        'color', 'serie', 'component',
+        'manufacturer', 'type_currency', 'type').filter(series__name=serie) \
+        .values('type__name', 'component__name').distinct()
     result = {}
     for element in query:
-        type_ = element["type__name"]
-        component = element["component__name"]
+        type_ = element['type__name']
+        component = element['component__name']
         if type_ in result:
             result[type_].append(component)
         else:
@@ -50,12 +50,12 @@ def get_colors(serie: str):
     'Механізм': ['без кольору'], 'Накладка': ['полярний білий']}
     """
     query = Color.objects.filter(product__series__name=serie) \
-        .values("product__type__name", "name").distinct()
+        .values('product__type__name', 'name').distinct()
 
     result = {}
     for element in query:
-        type_ = element["product__type__name"]
-        color = element["name"]
+        type_ = element['product__type__name']
+        color = element['name']
         if type_ in result:
             result[type_].append(color)
         else:
@@ -122,18 +122,18 @@ def change_order_serie(order, new_serie):
 
 
 def get_list_with_kits(order):
-    result = {"vertical": {}, "horizontal": {}}
+    result = {'vertical': {}, 'horizontal': {}}
     for i in range(1, 7):
-        result["horizontal"][i] = []
-        result["vertical"][i] = []
+        result['horizontal'][i] = []
+        result['vertical'][i] = []
 
     order_sets = OrderSet.objects.filter(order=order)
     for order_set in order_sets:
         if order_set.place_set.frame:
-            if "frame v" in order_set.place_set.frame.component.name:
-                result["vertical"][order_set.place_set.size].append(order_set)
+            if 'frame v' in order_set.place_set.frame.component.name:
+                result['vertical'][order_set.place_set.size].append(order_set)
                 continue
-        result["horizontal"][order_set.place_set.size].append(order_set)
+        result['horizontal'][order_set.place_set.size].append(order_set)
 
     return result
 
@@ -157,20 +157,20 @@ def get_products_list_in_order(order):
 
 
 def get_filtered_fields_form(form, order):
-    form.fields["cover"].queryset = Product.objects.filter(
-        type__name="cover",
+    form.fields['cover'].queryset = Product.objects.filter(
+        type__name='cover',
         series=order.series,
         color=order.cover_color
     )
-    form.fields["mechanism"].queryset = Product.objects.filter(
-        type__name="mechanism",
+    form.fields['mechanism'].queryset = Product.objects.filter(
+        type__name='mechanism',
         series=order.series,
-        color__name__in=[order.cover_color.name, "no color"]
+        color__name__in=[order.cover_color.name, 'no color']
     )
-    form.fields["additional"].queryset = Product.objects.filter(
-        type__name="additional",
+    form.fields['additional'].queryset = Product.objects.filter(
+        type__name='additional',
         series=order.series,
-        color__name__in=[order.cover_color.name, "no color"]
+        color__name__in=[order.cover_color.name, 'no color']
     )
 
     return form

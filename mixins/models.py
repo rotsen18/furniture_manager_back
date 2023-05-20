@@ -30,7 +30,3 @@ class AuthorMixin(models.Model):
 
     class Meta:
         abstract = True
-
-
-
-

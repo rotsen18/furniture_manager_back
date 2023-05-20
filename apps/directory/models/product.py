@@ -20,17 +20,17 @@ class Component(models.Model):  # switcher with 1 button
     name = models.CharField(max_length=255)
     size = models.FloatField(default=1)
     cover = models.ForeignKey(
-        "Component",
+        'Component',
         null=True,
         blank=True,
-        related_name="covers",
+        related_name='covers',
         on_delete=models.CASCADE,
     )
     additional_component = models.ForeignKey(
-        "Component",
+        'Component',
         null=True,
         blank=True,
-        related_name="components",
+        related_name='components',
         on_delete=models.CASCADE,
     )
 

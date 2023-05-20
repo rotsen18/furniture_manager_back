@@ -13,15 +13,15 @@ from apps.order.models.client import Client
 @login_required
 def index(request):
     context = {
-        "orders_count": Order.objects.filter(manager=request.user).count(),
-        "clients_count": -1,
+        'orders_count': Order.objects.filter(manager=request.user).count(),
+        'clients_count': -1,
     }
-    return render(request, "configurator/index.html", context=context)
+    return render(request, 'configurator/index.html', context=context)
 
 
 class OrderListView(LoginRequiredMixin, generic.ListView):
     model = Order
-    queryset = Order.objects.order_by("-created_at")
+    queryset = Order.objects.order_by('-created_at')
 
     def get_queryset(self):
         return self.queryset.filter(manager=self.request.user)
@@ -36,44 +36,44 @@ class OrderDetailView(LoginRequiredMixin, generic.DetailView):
         products = get_products_list_in_order(self.object)
 
         context.update(order_sets)
-        context["products"] = products
+        context['products'] = products
 
         return context
 
 
 class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Order
-    success_url = reverse_lazy("configurator:orders_list")
+    success_url = reverse_lazy('configurator:orders_list')
 
 
 class OrderUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Order
     fields = [
-        "client",
-        "manager",
-        "description",
-        "manufacturer",
-        "series",
-        "mech_color",
-        "cover_color",
-        "frame_color",
+        'client',
+        'manager',
+        'description',
+        'manufacturer',
+        'series',
+        'mech_color',
+        'cover_color',
+        'frame_color',
     ]
-    success_url = reverse_lazy("configurator:orders_list")
+    success_url = reverse_lazy('configurator:orders_list')
 
 
 class OrderCreateView(LoginRequiredMixin, generic.CreateView):
     model = Order
     fields = [
-        "client",
-        "manager",
-        "description",
-        "manufacturer",
-        "series",
-        "mech_color",
-        "cover_color",
-        "frame_color",
+        'client',
+        'manager',
+        'description',
+        'manufacturer',
+        'series',
+        'mech_color',
+        'cover_color',
+        'frame_color',
     ]
-    success_url = reverse_lazy("configurator:orders_detail")
+    success_url = reverse_lazy('configurator:orders_detail')
 
 
 class ClientListView(LoginRequiredMixin, generic.ListView):
@@ -86,9 +86,9 @@ class ClientDetailView(LoginRequiredMixin, generic.DetailView):
 
 class ClientCreateView(LoginRequiredMixin, generic.CreateView):
     model = Client
-    fields = "__all__"
+    fields = '__all__'
 
 
 class ClientDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Client
-    success_url = reverse_lazy("configurator:client_list")
+    success_url = reverse_lazy('configurator:client_list')
