@@ -70,8 +70,8 @@ class Product(models.Model):
     ean = models.IntegerField(null=True, blank=True, unique=True)
     price = models.FloatField(null=True)
     price_currency = models.FloatField(null=True)
-    type_currency = models.ForeignKey(
-        "order.Currency", default=1, null=True, on_delete=models.SET_NULL
+    currency = models.ForeignKey(
+        "order.Currency", null=True, on_delete=models.SET_NULL
     )
 
     def __str__(self):

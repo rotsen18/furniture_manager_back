@@ -11,6 +11,6 @@ class User(AbstractUser):
     class TypeUserChoices(models.TextChoices):
         ADMIN = ('Admin', 'Адмін')
         MANAGER = ('Manager', 'Менеджер')
-        CONSUMER = ('Consumer', 'Користувач')
+        Client = ('Client', 'Клієнт')
 
-    type_user = models.CharField(choices=TypeUserChoices.choices, default=TypeUserChoices.CONSUMER, max_length=40)
+    type_user = models.CharField(choices=TypeUserChoices.choices, default=TypeUserChoices.Client, max_length=40)

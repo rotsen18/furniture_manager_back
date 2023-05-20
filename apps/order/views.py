@@ -13,9 +13,7 @@ from apps.order.models.client import Client
 def index(request):
     context = {
         "orders_count": Order.objects.filter(manager=request.user).count(),
-        "clients_count": Client.objects.filter(orders__manager=request.user)
-        .distinct()
-        .count(),
+        "clients_count": -1,
     }
     return render(request, "configurator/index.html", context=context)
 
