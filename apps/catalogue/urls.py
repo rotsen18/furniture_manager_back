@@ -4,9 +4,9 @@ from apps.catalogue.views import ManufacturerCreateView
 
 urlpatterns = [
     path(
-        "manufacturers/create/",
+        'manufacturers/create/',
         ManufacturerCreateView.as_view(),
-        name="manufacturer_create",
+        name='manufacturer_create',
     ),
 ]
 
