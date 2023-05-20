@@ -32,6 +32,8 @@
           <td>{{ product.ean }}</td>
           <td>{{ product.price }}</td>
         </tr>
+      {% empty %}
+          <p>There no products</p>
       {% endfor %}
       </tbody>
     </table>
