@@ -11,11 +11,11 @@ class ProductListView(LoginRequiredMixin, generic.ListView):
 
 class SeriesCreateView(LoginRequiredMixin, generic.CreateView):
     model = Series
-    fields = "__all__"
-    success_url = reverse_lazy("configurator:index")
+    fields = '__all__'
+    success_url = reverse_lazy('configurator:index')
 
 
 class ManufacturerCreateView(LoginRequiredMixin, generic.CreateView):
     model = Manufacturer
-    fields = "__all__"
-    success_url = reverse_lazy("configurator:index")
+    fields = '__all__'
+    success_url = reverse_lazy('configurator:index')
