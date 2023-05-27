@@ -21,21 +21,26 @@ from rest_framework.authtoken.views import obtain_auth_token
 from drf_spectacular.views import SpectacularAPIView, SpectacularJSONAPIView, SpectacularSwaggerView
 
 
-urlpatterns = [
+django_urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.configurator.urls', namespace='configurator')),
-    # path("configurator/", include("configurator.urls", namespace="configurator")),
     path('accounts/', include('django.contrib.auth.urls')),
     path('directory/', include('apps.directory.urls')),
     path('catalogue/', include('apps.catalogue.urls')),
     path('order/', include('apps.order.urls')),
-    path('api/v1/get-api-token/', obtain_auth_token),
-    path('api/v1/configurator/', include('apps.configurator.api.v1.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+api_urlpatterns = [
+    path('api/v1/auth/login/', obtain_auth_token),
+    path('api/v1/configurator/', include('apps.configurator.api.v1.urls')),
+    path('api/v1/directory/', include('apps.directory.api.v1.urls')),
+]
+
+urlpatterns = django_urlpatterns + api_urlpatterns
 
 if settings.SWAGGER_URL:
     urlpatterns += [
-        path('api/v1/Go9lYiNcza68F2lzPrX/', SpectacularAPIView.as_view(urlconf=urlpatterns), name='schema'),
-        path('api/v1/Go9lYiNcza68F2lzPrX.json', SpectacularJSONAPIView.as_view(urlconf=urlpatterns), name='schema'),
+        path('api/v1/Go9lYiNcza68F2lzPrX/', SpectacularAPIView.as_view(urlconf=api_urlpatterns), name='schema'),
+        path('api/v1/Go9lYiNcza68F2lzPrX.json', SpectacularJSONAPIView.as_view(urlconf=api_urlpatterns), name='schema'),
         path(f'api/v1/{settings.SWAGGER_URL}', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     ]
