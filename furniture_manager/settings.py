@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     # project apps
     'furniture_manager',
     'apps.configurator',
@@ -38,11 +39,16 @@ INSTALLED_APPS = [
     'apps.order',
     'apps.catalogue',
     'apps.directory',
+
     # 3rd apps
     'django_extensions',
     'crispy_forms',
     'crispy_bootstrap5',
     'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'drf_spectacular',
+    'django_filters',
 ]
 
 AUTH_USER_MODEL = 'core.User'
@@ -91,6 +97,35 @@ WSGI_APPLICATION = 'furniture_manager.wsgi.application'
 
 DATABASES = {
     'default': env.db(engine='django.db.backends.postgresql_psycopg2'),
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'PAGE_SIZE': 100,
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
+    'DATE_FORMAT': '%Y-%m-%d',
+}
+
+SWAGGER_URL = env.str('SWAGGER_URL')
+
+SPECTACULAR_SETTINGS = {
+    'SWAGGER_UI_SETTINGS': {
+        'persistAuthorization': True,
+    },
 }
 
 # Password validation
