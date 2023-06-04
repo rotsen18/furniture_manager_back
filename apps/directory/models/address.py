@@ -1,17 +1,11 @@
 from django.db import models
 
-from mixins.models import SingleNameMixin
+from mixins.models import SingleNameMixin, AuthorMixin, DateTimeMixin
 
 
-class City(SingleNameMixin):
+class City(SingleNameMixin, AuthorMixin, DateTimeMixin):
     pass
 
-    def __str__(self):
-        return self.name
 
-
-class Country(SingleNameMixin):
+class Country(SingleNameMixin, AuthorMixin, DateTimeMixin):
     code = models.CharField(max_length=2, unique=True, default='')
-
-    def __str__(self):
-        return self.name

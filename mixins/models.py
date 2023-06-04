@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from furniture_manager.middlewares import get_current_authenticated_user
 
 
 User = settings.AUTH_USER_MODEL
@@ -25,8 +26,7 @@ class DateTimeMixin(models.Model):
 
 
 class AuthorMixin(models.Model):
-    # TODO add default user
-    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, default=get_current_authenticated_user, null=True)
 
     class Meta:
         abstract = True
